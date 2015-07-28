@@ -30,6 +30,6 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://gitgub.com/ringcentral/ringcentral-js-helpers.git"
+    "url": "git://github.com/ringcentral/ringcentral-js-helpers.git"
   }
 }

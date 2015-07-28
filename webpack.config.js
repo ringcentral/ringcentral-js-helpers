@@ -2,10 +2,10 @@ var webpack = require('webpack'),
     path = require('path'),
     glob = require('glob'),
     libExternals = {
-        'ringcentral': getExternal('RingCentral', 'ringcentral')
     },
     testExternals = {
-        '../lib/SDK': getExternal('SDK', '../ringcentral-helpers'),
+        'ringcentral': getExternal('RingCentral', 'ringcentral'),
+        '../SDK': getExternal('SDK', '../ringcentral-helpers'),
         'soap': getExternal('soap'),
         'chai': getExternal('chai'),
         'sinon': getExternal('sinon'),
@@ -35,8 +35,8 @@ function createConfig(config) {
 
         output: {
             filename: './build/[name]',
-            libraryTarget: 'umd', //TODO RCSDK.noConflict()
-            library: 'RCSDK',
+            libraryTarget: 'umd',
+            library: ['RingCentral', 'Helpers'],
             sourcePrefix: ''
         },
 
@@ -72,9 +72,9 @@ function createConfig(config) {
 module.exports = [
     createConfig({
         entry: {
-            'ringcentral-helpers.js': ['./src/lib/SDK.ts'],
+            'ringcentral-helpers.js': ['./src/SDK.ts'],
             'tests/specs.js': glob
-                .sync('src/lib/**/*-spec.ts')
+                .sync('src/**/*-spec.ts')
                 .sort(function(a, b) { return b.localeCompare(a); })
                 .concat('src/test/mocha.ts') // this one will be exported
                 .map(function(f) {

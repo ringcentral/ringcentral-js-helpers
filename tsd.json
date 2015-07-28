@@ -17,12 +17,6 @@
     "mocha/mocha.d.ts": {
       "commit": "30cfe7dedb3ae990a369cda93995d69b169465bd"
     },
-    "q/Q.d.ts": {
-      "commit": "30cfe7dedb3ae990a369cda93995d69b169465bd"
-    },
-    "requirejs/require.d.ts": {
-      "commit": "26df7a5696a909bf30cd97564f9efaab7862469d"
-    },
     "es6-promise/es6-promise.d.ts": {
       "commit": "3882d337bb0808cde9fe4c08012508a48c135482"
     },

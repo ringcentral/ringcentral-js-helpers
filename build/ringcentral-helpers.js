@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("ringcentral"));
+		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define(["ringcentral"], factory);
+		define([], factory);
 	else if(typeof exports === 'object')
-		exports["RCSDK"] = factory(require("ringcentral"));
+		exports["Helpers"] = factory();
 	else
-		root["RCSDK"] = factory(root["RingCentral"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_4__) {
+		root["RingCentral"] = root["RingCentral"] || {}, root["RingCentral"]["Helpers"] = factory();
+})(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -61,20 +61,20 @@ module.exports = __webpack_require__(1);
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../externals.d.ts" />
-var RingCentral = __webpack_require__(4);
-var validator = __webpack_require__(5);
-var list = __webpack_require__(6);
-var accountHelper = __webpack_require__(7);
-var blockedNumberHelper = __webpack_require__(8);
-var callHelper = __webpack_require__(9);
-var contactHelper = __webpack_require__(10);
-var contactGroupHelper = __webpack_require__(11);
-var conferencingHelper = __webpack_require__(12);
-var countryHelper = __webpack_require__(13);
-var deviceHelper = __webpack_require__(14);
-var deviceModelHelper = __webpack_require__(15);
-var extensionHelper = __webpack_require__(2);
+/// <reference path="./externals.d.ts" />
+var validator = __webpack_require__(2);
+var list = __webpack_require__(3);
+var utils = __webpack_require__(4);
+var accountHelper = __webpack_require__(5);
+var blockedNumberHelper = __webpack_require__(7);
+var callHelper = __webpack_require__(8);
+var contactHelper = __webpack_require__(9);
+var contactGroupHelper = __webpack_require__(10);
+var conferencingHelper = __webpack_require__(11);
+var countryHelper = __webpack_require__(12);
+var deviceHelper = __webpack_require__(13);
+var deviceModelHelper = __webpack_require__(14);
+var extensionHelper = __webpack_require__(15);
 var forwardingNumberHelper = __webpack_require__(16);
 var languageHelper = __webpack_require__(17);
 var locationHelper = __webpack_require__(18);
@@ -87,138 +87,498 @@ var shippingMethodHelper = __webpack_require__(24);
 var stateHelper = __webpack_require__(25);
 var timezoneHelper = __webpack_require__(26);
 var RingCentralHelpers = (function () {
-    function RingCentralHelpers(sdk) {
-        this.sdk = sdk;
-        this.validator = new validator.Validator(sdk);
-        this.list = new list.List(sdk);
-        this.account = new accountHelper.Account(sdk, this.validator, this.list);
-        this.blockedNumber = new blockedNumberHelper.BlockedNumber(sdk, this.validator, this.list);
-        this.conferencing = new conferencingHelper.Conferencing(sdk, this.validator, this.list);
-        this.contact = new contactHelper.Contact(sdk, this.validator, this.list);
-        this.contactGroup = new contactGroupHelper.ContactGroup(sdk, this.validator, this.list);
-        this.country = new countryHelper.Country(sdk, this.validator, this.list);
-        this.extension = new extensionHelper.Extension(sdk, this.validator, this.list);
-        this.deviceModel = new deviceModelHelper.DeviceModel(sdk, this.validator, this.list);
-        this.device = new deviceHelper.Device(sdk, this.validator, this.list, this.extension, this.deviceModel);
-        this.presence = new presenceHelper.Presence(sdk, this.validator, this.list, this.extension);
-        this.call = new callHelper.Call(sdk, this.validator, this.list, this.presence, this.contact);
-        this.forwardingNumber = new forwardingNumberHelper.ForwardingNumber(sdk, this.validator, this.list);
-        this.language = new languageHelper.Language(sdk, this.validator, this.list);
-        this.state = new stateHelper.State(sdk, this.validator, this.list, this.country);
-        this.location = new locationHelper.Location(sdk, this.validator, this.list, this.state);
-        this.message = new messageHelper.Message(sdk, this.validator, this.list, this.contact);
-        this.phoneNumber = new phoneNumberHelper.PhoneNumber(sdk, this.validator, this.list);
-        this.ringout = new ringoutHelper.Ringout(sdk, this.validator, this.list);
-        this.service = new serviceHelper.Service(sdk, this.validator, this.list);
-        this.shippingMethod = new shippingMethodHelper.ShippingMethod(sdk, this.validator, this.list);
-        this.timezone = new timezoneHelper.Timezone(sdk, this.validator, this.list);
+    function RingCentralHelpers() {
+        this.version = '0.1.0';
+        this._utils = new utils.Utils();
+        this._validator = new validator.Validator(this._utils);
+        this._list = new list.List(this._utils);
+        this._account = new accountHelper.Account(this._utils, this._validator, this._list);
+        this._blockedNumber = new blockedNumberHelper.BlockedNumber(this._utils, this._validator, this._list);
+        this._conferencing = new conferencingHelper.Conferencing(this._utils, this._validator, this._list);
+        this._contact = new contactHelper.Contact(this._utils, this._validator, this._list);
+        this._contactGroup = new contactGroupHelper.ContactGroup(this._utils, this._validator, this._list);
+        this._country = new countryHelper.Country(this._utils, this._validator, this._list);
+        this._extension = new extensionHelper.Extension(this._utils, this._validator, this._list);
+        this._deviceModel = new deviceModelHelper.DeviceModel(this._utils, this._validator, this._list);
+        this._device = new deviceHelper.Device(this._utils, this._validator, this._list, this._extension, this._deviceModel);
+        this._presence = new presenceHelper.Presence(this._utils, this._validator, this._list, this._extension);
+        this._call = new callHelper.Call(this._utils, this._validator, this._list, this._presence, this._contact);
+        this._forwardingNumber = new forwardingNumberHelper.ForwardingNumber(this._utils, this._validator, this._list);
+        this._language = new languageHelper.Language(this._utils, this._validator, this._list);
+        this._state = new stateHelper.State(this._utils, this._validator, this._list, this._country);
+        this._location = new locationHelper.Location(this._utils, this._validator, this._list, this._state);
+        this._message = new messageHelper.Message(this._utils, this._validator, this._list, this._contact);
+        this._phoneNumber = new phoneNumberHelper.PhoneNumber(this._utils, this._validator, this._list);
+        this._ringout = new ringoutHelper.Ringout(this._utils, this._validator, this._list);
+        this._service = new serviceHelper.Service(this._utils, this._validator, this._list);
+        this._shippingMethod = new shippingMethodHelper.ShippingMethod(this._utils, this._validator, this._list);
+        this._timezone = new timezoneHelper.Timezone(this._utils, this._validator, this._list);
     }
-    RingCentralHelpers.prototype.getCountry = function () { return this.country; };
-    RingCentralHelpers.prototype.getDeviceModel = function () { return this.deviceModel; };
-    RingCentralHelpers.prototype.getLanguage = function () { return this.language; };
-    RingCentralHelpers.prototype.getLocation = function () { return this.location; };
-    RingCentralHelpers.prototype.getShippingMethod = function () { return this.shippingMethod; };
-    RingCentralHelpers.prototype.getState = function () { return this.state; };
-    RingCentralHelpers.prototype.getTimezone = function () { return this.timezone; };
-    RingCentralHelpers.prototype.getAccount = function () { return this.account; };
-    RingCentralHelpers.prototype.getBlockedNumber = function () { return this.blockedNumber; };
-    RingCentralHelpers.prototype.getCall = function () { return this.call; };
-    RingCentralHelpers.prototype.getConferencing = function () { return this.conferencing; };
-    RingCentralHelpers.prototype.getContact = function () { return this.contact; };
-    RingCentralHelpers.prototype.getContactGroup = function () { return this.contactGroup; };
-    RingCentralHelpers.prototype.getDevice = function () { return this.device; };
-    RingCentralHelpers.prototype.getExtension = function () { return this.extension; };
-    RingCentralHelpers.prototype.getForwardingNumber = function () { return this.forwardingNumber; };
-    RingCentralHelpers.prototype.getMessage = function () { return this.message; };
-    RingCentralHelpers.prototype.getPhoneNumber = function () { return this.phoneNumber; };
-    RingCentralHelpers.prototype.getPresence = function () { return this.presence; };
-    RingCentralHelpers.prototype.getRingout = function () { return this.ringout; };
-    RingCentralHelpers.prototype.getService = function () { return this.service; };
-    RingCentralHelpers.version = '0.1.0';
+    RingCentralHelpers.prototype.country = function () { return this._country; };
+    RingCentralHelpers.prototype.deviceModel = function () { return this._deviceModel; };
+    RingCentralHelpers.prototype.language = function () { return this._language; };
+    RingCentralHelpers.prototype.location = function () { return this._location; };
+    RingCentralHelpers.prototype.shippingMethod = function () { return this._shippingMethod; };
+    RingCentralHelpers.prototype.state = function () { return this._state; };
+    RingCentralHelpers.prototype.timezone = function () { return this._timezone; };
+    RingCentralHelpers.prototype.account = function () { return this._account; };
+    RingCentralHelpers.prototype.blockedNumber = function () { return this._blockedNumber; };
+    RingCentralHelpers.prototype.call = function () { return this._call; };
+    RingCentralHelpers.prototype.conferencing = function () { return this._conferencing; };
+    RingCentralHelpers.prototype.contact = function () { return this._contact; };
+    RingCentralHelpers.prototype.contactGroup = function () { return this._contactGroup; };
+    RingCentralHelpers.prototype.device = function () { return this._device; };
+    RingCentralHelpers.prototype.extension = function () { return this._extension; };
+    RingCentralHelpers.prototype.forwardingNumber = function () { return this._forwardingNumber; };
+    RingCentralHelpers.prototype.message = function () { return this._message; };
+    RingCentralHelpers.prototype.phoneNumber = function () { return this._phoneNumber; };
+    RingCentralHelpers.prototype.presence = function () { return this._presence; };
+    RingCentralHelpers.prototype.ringout = function () { return this._ringout; };
+    RingCentralHelpers.prototype.service = function () { return this._service; };
     return RingCentralHelpers;
 })();
-module.exports = RingCentralHelpers;
+module.exports = new RingCentralHelpers();
 
 
 /***/ },
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var helper = __webpack_require__(3);
-var Extension = (function (_super) {
-    __extends(Extension, _super);
-    function Extension() {
-        _super.apply(this, arguments);
-        this.type = {
-            department: 'Department',
-            user: 'User',
-            announcement: 'Announcement',
-            voicemail: 'Voicemail'
-        };
+/// <reference path="../externals.d.ts" />
+var Validator = (function () {
+    function Validator(utils) {
+        this.utils = utils;
     }
-    Extension.prototype.createUrl = function (options, id) {
-        options = options || {};
-        return '/account/~' +
-            (options.departmentId ? '/department/' + options.departmentId + '/members' : '/extension') +
-            (id ? '/' + id : '');
-    };
-    Extension.prototype.isUser = function (extension) {
-        return extension && extension.type == this.type.user;
-    };
-    Extension.prototype.isDepartment = function (extension) {
-        return extension && extension.type == this.type.department;
-    };
-    Extension.prototype.isAnnouncement = function (extension) {
-        return extension && extension.type == this.type.announcement;
-    };
-    Extension.prototype.isVoicemail = function (extension) {
-        return extension && extension.type == this.type.voicemail;
-    };
-    Extension.prototype.comparator = function (options) {
-        return this.list.comparator(this.utils.extend({
-            sortBy: 'extensionNumber',
-            compareFn: this.list.numberComparator
-        }, options));
-    };
-    Extension.prototype.filter = function (options) {
-        options = this.utils.extend({
-            search: '',
-            type: ''
-        }, options);
-        return this.list.filter([
-            { filterBy: 'type', condition: options.type },
-            {
-                condition: options.search.toLocaleLowerCase(),
-                filterFn: this.list.containsFilter,
-                extractFn: function (item) {
-                    return (item.name && (item.name.toLocaleLowerCase() + ' ')) +
-                        (item.extensionNumber && item.extensionNumber.toString().toLocaleLowerCase());
-                }
+    Validator.prototype.validate = function (validators) {
+        var result = {
+            errors: {},
+            isValid: true
+        };
+        result.errors = validators.reduce(function (errors, validator) {
+            var res = validator.validator();
+            if (res.length > 0) {
+                result.isValid = false;
+                errors[validator.field] = errors[validator.field] || [];
+                errors[validator.field] = errors[validator.field].concat(res);
             }
-        ]);
+            return errors;
+        }, {});
+        return result;
     };
-    return Extension;
-})(helper.Helper);
-exports.Extension = Extension;
+    /**
+     * It is not recommended to have any kinds of complex validators at front end
+     * @deprecated
+     */
+    Validator.prototype.email = function (value, multiple) {
+        var _this = this;
+        return function () {
+            if (!value)
+                return [];
+            return _this.utils.isEmail(value, multiple) ? [] : [new Error('Value has to be a valid email')];
+        };
+    };
+    /**
+     * It is not recommended to have any kinds of complex validators at front end
+     * TODO International phone numbers
+     * @deprecated
+     */
+    Validator.prototype.phone = function (value) {
+        var _this = this;
+        return function () {
+            if (!value)
+                return [];
+            return _this.utils.isPhoneNumber(value) ? [] : [new Error('Value has to be a valid US phone number')];
+        };
+    };
+    Validator.prototype.required = function (value) {
+        return function () {
+            return !value ? [new Error('Field is required')] : [];
+        };
+    };
+    Validator.prototype.length = function (value, max, min) {
+        return function () {
+            var errors = [];
+            if (!value)
+                return errors;
+            value = value.toString();
+            if (min && value.length < min)
+                errors.push(new Error('Minimum length of ' + min + ' characters is required'));
+            if (max && value.length > max)
+                errors.push(new Error('Maximum length of ' + max + ' characters is required'));
+            return errors;
+        };
+    };
+    return Validator;
+})();
+exports.Validator = Validator;
 
 
 /***/ },
 /* 3 */
 /***/ function(module, exports) {
 
-/// <reference path="../../externals.d.ts" />
+/// <reference path="../externals.d.ts" />
+var List = (function () {
+    function List(utils) {
+        this.utils = utils;
+        this.numberComparator = this.numberComparator.bind(this);
+        this.stringComparator = this.stringComparator.bind(this);
+    }
+    /**
+     * TODO Use utils getProperty
+     * @param {string} property
+     * @returns {function(object)}
+     */
+    List.prototype.propertyExtractor = function (property) {
+        return function (item, options) {
+            return property ? ((item && item[property]) || null) : item;
+        };
+    };
+    /**
+     * Non-string types are converted to string
+     * Non-string types are extracted as an empty string if they could be converted to false
+     * If no options.sortBy given the item itself is extracted
+     * Compares strings:
+     * - if (a is less than b) return -1;
+     * - if (a is greater than b) return 1;
+     * - else (a must be equal to b) return 0;
+     * Exceptions in will be suppressed, if any - a is assumed to be less than b
+     */
+    List.prototype.stringComparator = function (a, b, options) {
+        return this.utils.parseString(a).localeCompare(this.utils.parseString(b));
+    };
+    /**
+     * Non-numeric types are extracted as 0 if they could be converted to false
+     * Objects that could not be converted to number are extracted as 0
+     * If no options.sortBy given the item itself is extracted
+     * See parseFloat for more info
+     * Compares numbers:
+     * - if (a is less than b) return -1;
+     * - if (a is greater than b) return 1;
+     * - else (a must be equal to b) return 0;
+     * Function does not check types
+     * Exceptions in will be suppressed, if any - a is assumed to be less than b
+     */
+    List.prototype.numberComparator = function (a, b, options) {
+        return (this.utils.parseNumber(a) - this.utils.parseNumber(b));
+    };
+    /**
+     * Function extracts (using _extractFn_ option) values of a property (_sortBy_ option) and compares them using
+     * compare function (_compareFn_ option, by default Helper.stringComparator)
+     * Merged options are provided to _extractFn_ and _compareFn_
+     * TODO Check memory leaks for all that options links
+     */
+    List.prototype.comparator = function (options) {
+        options = this.utils.extend({
+            extractFn: this.propertyExtractor((options && options.sortBy) || null).bind(this),
+            compareFn: this.stringComparator.bind(this)
+        }, options);
+        return function (item1, item2) {
+            return options.compareFn(options.extractFn(item1, options), options.extractFn(item2, options), options);
+        };
+    };
+    List.prototype.equalsFilter = function (obj, options) {
+        return (options.condition === obj);
+    };
+    /**
+     * @param {string} obj
+     * @param {IListFilterOptions} options
+     * @returns {boolean}
+     */
+    List.prototype.containsFilter = function (obj, options) {
+        return (obj && obj.toString().indexOf(options.condition) > -1);
+    };
+    List.prototype.regexpFilter = function (obj, options) {
+        if (!(options.condition instanceof RegExp))
+            throw new Error('Condition must be an instance of RegExp');
+        return (options.condition.test(obj));
+    };
+    /**
+     * Function extracts (using `extractFn` option) values of a property (`filterBy` option) and filters them using
+     * compare function (`filterFn` option, by default Helper.equalsFilter)
+     * Merged options are provided to `extractFn` and `compareFn`
+     * Set `filterBy` to null to force `propertyExtractor` to return object itself
+     * TODO Check memory leaks for all that options links
+     */
+    List.prototype.filter = function (filterConfigs) {
+        var _this = this;
+        var self = this;
+        filterConfigs = (filterConfigs || []).map(function (opt) {
+            return _this.utils.extend({
+                condition: '',
+                extractFn: self.propertyExtractor((opt && opt.filterBy) || null).bind(_this),
+                filterFn: self.equalsFilter.bind(_this)
+            }, opt);
+        });
+        return function (item) {
+            return filterConfigs.reduce(function (pass, opt) {
+                if (!pass || !opt.condition)
+                    return pass;
+                return opt.filterFn(opt.extractFn(item, opt), opt);
+            }, true);
+        };
+    };
+    return List;
+})();
+exports.List = List;
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+/// <reference path="../externals.d.ts" />
+var hasOwn = Object.prototype.hasOwnProperty, toString = Object.prototype.toString, rdigit = /\d/, class2type = {};
+// Populate the class2type map
+'Boolean Number String Function Array Date RegExp Object'.split(' ').forEach(function (name) {
+    class2type["[object " + name + "]"] = name.toLowerCase();
+});
+var Utils = (function () {
+    function Utils() {
+    }
+    /**
+     * Ported from jQuery.fn.extend
+     * Optional first parameter makes deep copy
+     */
+    Utils.prototype.extend = function (targetObject, sourceObject) {
+        var args = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            args[_i - 2] = arguments[_i];
+        }
+        var options, name, src, copy, copyIsArray, clone, target = arguments[0] || {}, i = 1, length = arguments.length, deep = false;
+        // Handle a deep copy situation
+        if (typeof target === "boolean") {
+            deep = target;
+            // skip the boolean and the target
+            target = arguments[i] || {};
+            i++;
+        }
+        // Handle case when target is a string or something (possible in deep copy)
+        if (typeof target !== "object" && !this.isFunction(target)) {
+            target = {};
+        }
+        for (; i < length; i++) {
+            // Only deal with non-null/undefined values
+            if ((options = arguments[i]) !== null) {
+                // Extend the base object
+                for (name in options) {
+                    src = target[name];
+                    copy = options[name];
+                    // Prevent never-ending loop
+                    if (target === copy) {
+                        continue;
+                    }
+                    // Recurse if we're merging plain objects or arrays
+                    if (deep && copy && (this.isPlainObject(copy) || (copyIsArray = this.isArray(copy)))) {
+                        if (copyIsArray) {
+                            copyIsArray = false;
+                            clone = src && this.isArray(src) ? src : [];
+                        }
+                        else {
+                            clone = src && this.isPlainObject(src) ? src : {};
+                        }
+                        // Never move original objects, clone them
+                        target[name] = this.extend(deep, clone, copy);
+                    }
+                    else if (copy !== undefined) {
+                        target[name] = copy;
+                    }
+                }
+            }
+        }
+        // Return the modified object
+        return target;
+    };
+    Utils.prototype.forEach = function (object, cb) {
+        for (var i in object) {
+            if (!object.hasOwnProperty(i))
+                continue;
+            var res = cb(object[i], i);
+            if (res === false)
+                break;
+        }
+    };
+    /**
+     * TODO Replace with something better
+     * @see https://github.com/joyent/node/blob/master/lib/querystring.js
+     * @param {object} parameters
+     * @returns {string}
+     */
+    Utils.prototype.queryStringify = function (parameters) {
+        var _this = this;
+        var array = [];
+        this.forEach(parameters, function (v, i) {
+            if (_this.isArray(v)) {
+                v.forEach(function (vv) {
+                    array.push(encodeURIComponent(i) + '=' + encodeURIComponent(vv));
+                });
+            }
+            else {
+                array.push(encodeURIComponent(i) + '=' + encodeURIComponent(v));
+            }
+        });
+        return array.join('&');
+    };
+    /**
+     * TODO Replace with something better
+     * @see https://github.com/joyent/node/blob/master/lib/querystring.js
+     * @param {string} queryString
+     * @returns {object}
+     */
+    Utils.prototype.parseQueryString = function (queryString) {
+        var argsParsed = {}, self = this;
+        queryString.split('&').forEach(function (arg) {
+            arg = decodeURIComponent(arg);
+            if (arg.indexOf('=') == -1) {
+                argsParsed[arg.trim()] = true;
+            }
+            else {
+                var pair = arg.split('='), key = pair[0].trim(), value = pair[1].trim();
+                if (key in argsParsed) {
+                    if (key in argsParsed && !self.isArray(argsParsed[key]))
+                        argsParsed[key] = [argsParsed[key]];
+                    argsParsed[key].push(value);
+                }
+                else {
+                    argsParsed[key] = value;
+                }
+            }
+        });
+        return argsParsed;
+    };
+    /**
+     * Returns true if the passed value is valid email address.
+     * Checks multiple comma separated emails according to RFC 2822 if parameter `multiple` is `true`
+     */
+    Utils.prototype.isEmail = function (v, multiple) {
+        if (!!multiple) {
+            //this Regexp is also suitable for multiple emails (comma separated)
+            return /^(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?[ ,;]*)+$/i.test(v);
+        }
+        else {
+            return /^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i.test(v);
+        }
+    };
+    Utils.prototype.isPhoneNumber = function (v) {
+        return (/\+?1[0-9]{3}[0-9a-z]{7}/im.test(v.toString().split(/[^0-9a-z\+]/im).join('')));
+    };
+    /**
+     * @param args
+     * @returns {Array}
+     */
+    Utils.prototype.argumentsToArray = function (args) {
+        return Array.prototype.slice.call(args || [], 0);
+    };
+    Utils.prototype.isDate = function (obj) {
+        return this.type(obj) === "date";
+    };
+    Utils.prototype.isFunction = function (obj) {
+        return this.type(obj) === "function";
+    };
+    Utils.prototype.isArray = function (obj) {
+        return Array.isArray ? Array.isArray(obj) : this.type(obj) === "array";
+    };
+    // A crude way of determining if an object is a window
+    Utils.prototype.isWindow = function (obj) {
+        return obj && typeof obj === "object" && "setInterval" in obj;
+    };
+    Utils.prototype.isNaN = function (obj) {
+        return obj === null || !rdigit.test(obj) || isNaN(obj);
+    };
+    Utils.prototype.type = function (obj) {
+        return obj === null
+            ? String(obj)
+            : class2type[toString.call(obj)] || "object";
+    };
+    Utils.prototype.isPlainObject = function (obj) {
+        // Must be an Object.
+        // Because of IE, we also have to check the presence of the constructor property.
+        // Make sure that DOM nodes and window objects don't pass through, as well
+        if (!obj || this.type(obj) !== "object" || obj.nodeType || this.isWindow(obj)) {
+            return false;
+        }
+        // Not own constructor property must be Object
+        if (obj.constructor && !hasOwn.call(obj, "constructor") && !hasOwn.call(obj.constructor.prototype, "isPrototypeOf")) {
+            return false;
+        }
+        // Own properties are enumerated firstly, so to speed up,
+        // if last one is own, then all properties are own.
+        var key;
+        for (key in obj) { }
+        return key === undefined || hasOwn.call(obj, key);
+    };
+    Utils.prototype.getProperty = function (obj, property) {
+        return property
+            .split(/[.[\]]/)
+            .reduce(function (res, part) {
+            if (!res)
+                return undefined;
+            return part ? res[part] : res;
+        }, obj);
+    };
+    Utils.prototype.poll = function (fn, interval, timeout) {
+        this.stopPolling(timeout);
+        interval = interval || 1000;
+        var next = function (delay) {
+            delay = delay || interval;
+            interval = delay;
+            return setTimeout(function () {
+                fn(next, delay);
+            }, delay);
+        };
+        return next();
+    };
+    Utils.prototype.stopPolling = function (timeout) {
+        if (timeout)
+            clearTimeout(timeout);
+    };
+    Utils.prototype.parseString = function (s) {
+        return s ? s.toString() : '';
+    };
+    Utils.prototype.parseNumber = function (n) {
+        if (!n)
+            return 0;
+        n = parseFloat(n);
+        return isNaN(n) ? 0 : n;
+    };
+    return Utils;
+})();
+exports.Utils = Utils;
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var helper = __webpack_require__(6);
+var Account = (function (_super) {
+    __extends(Account, _super);
+    function Account() {
+        _super.apply(this, arguments);
+    }
+    Account.prototype.createUrl = function () {
+        return '/account/~';
+    };
+    return Account;
+})(helper.Helper);
+exports.Account = Account;
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+/// <reference path="../externals.d.ts" />
 var Helper = (function () {
-    function Helper(sdk, validator, list) {
+    function Helper(utils, validator, list) {
         this.defaultProperty = 'id';
-        this.sdk = sdk;
-        this.utils = sdk.getUtils();
+        this.utils = utils;
         this.validator = validator;
         this.list = list;
     }
@@ -364,233 +724,16 @@ exports.Helper = Helper;
 
 
 /***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
-
-/***/ },
-/* 5 */
-/***/ function(module, exports) {
-
-/// <reference path="../../externals.d.ts" />
-var Validator = (function () {
-    function Validator(sdk) {
-        this.sdk = sdk;
-        this.utils = sdk.getUtils();
-    }
-    Validator.prototype.validate = function (validators) {
-        var result = {
-            errors: {},
-            isValid: true
-        };
-        result.errors = validators.reduce(function (errors, validator) {
-            var res = validator.validator();
-            if (res.length > 0) {
-                result.isValid = false;
-                errors[validator.field] = errors[validator.field] || [];
-                errors[validator.field] = errors[validator.field].concat(res);
-            }
-            return errors;
-        }, {});
-        return result;
-    };
-    /**
-     * It is not recommended to have any kinds of complex validators at front end
-     * @deprecated
-     */
-    Validator.prototype.email = function (value, multiple) {
-        var _this = this;
-        return function () {
-            if (!value)
-                return [];
-            return _this.utils.isEmail(value, multiple) ? [] : [new Error('Value has to be a valid email')];
-        };
-    };
-    /**
-     * It is not recommended to have any kinds of complex validators at front end
-     * TODO International phone numbers
-     * @deprecated
-     */
-    Validator.prototype.phone = function (value) {
-        var _this = this;
-        return function () {
-            if (!value)
-                return [];
-            return _this.utils.isPhoneNumber(value) ? [] : [new Error('Value has to be a valid US phone number')];
-        };
-    };
-    Validator.prototype.required = function (value) {
-        return function () {
-            return !value ? [new Error('Field is required')] : [];
-        };
-    };
-    Validator.prototype.length = function (value, max, min) {
-        return function () {
-            var errors = [];
-            if (!value)
-                return errors;
-            value = value.toString();
-            if (min && value.length < min)
-                errors.push(new Error('Minimum length of ' + min + ' characters is required'));
-            if (max && value.length > max)
-                errors.push(new Error('Maximum length of ' + max + ' characters is required'));
-            return errors;
-        };
-    };
-    return Validator;
-})();
-exports.Validator = Validator;
-
-
-/***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-/// <reference path="../../externals.d.ts" />
-var List = (function () {
-    function List(sdk) {
-        this.sdk = sdk;
-        this.utils = sdk.getUtils();
-        this.numberComparator = this.numberComparator.bind(this);
-        this.stringComparator = this.stringComparator.bind(this);
-    }
-    /**
-     * TODO Use utils getProperty
-     * @param {string} property
-     * @returns {function(object)}
-     */
-    List.prototype.propertyExtractor = function (property) {
-        return function (item, options) {
-            return property ? ((item && item[property]) || null) : item;
-        };
-    };
-    /**
-     * Non-string types are converted to string
-     * Non-string types are extracted as an empty string if they could be converted to false
-     * If no options.sortBy given the item itself is extracted
-     * Compares strings:
-     * - if (a is less than b) return -1;
-     * - if (a is greater than b) return 1;
-     * - else (a must be equal to b) return 0;
-     * Exceptions in will be suppressed, if any - a is assumed to be less than b
-     */
-    List.prototype.stringComparator = function (a, b, options) {
-        return this.utils.parseString(a).localeCompare(this.utils.parseString(b));
-    };
-    /**
-     * Non-numeric types are extracted as 0 if they could be converted to false
-     * Objects that could not be converted to number are extracted as 0
-     * If no options.sortBy given the item itself is extracted
-     * See parseFloat for more info
-     * Compares numbers:
-     * - if (a is less than b) return -1;
-     * - if (a is greater than b) return 1;
-     * - else (a must be equal to b) return 0;
-     * Function does not check types
-     * Exceptions in will be suppressed, if any - a is assumed to be less than b
-     */
-    List.prototype.numberComparator = function (a, b, options) {
-        return (this.utils.parseNumber(a) - this.utils.parseNumber(b));
-    };
-    /**
-     * Function extracts (using _extractFn_ option) values of a property (_sortBy_ option) and compares them using
-     * compare function (_compareFn_ option, by default Helper.stringComparator)
-     * Merged options are provided to _extractFn_ and _compareFn_
-     * TODO Check memory leaks for all that options links
-     */
-    List.prototype.comparator = function (options) {
-        options = this.utils.extend({
-            extractFn: this.propertyExtractor((options && options.sortBy) || null).bind(this),
-            compareFn: this.stringComparator.bind(this)
-        }, options);
-        return function (item1, item2) {
-            return options.compareFn(options.extractFn(item1, options), options.extractFn(item2, options), options);
-        };
-    };
-    List.prototype.equalsFilter = function (obj, options) {
-        return (options.condition === obj);
-    };
-    /**
-     * @param {string} obj
-     * @param {IListFilterOptions} options
-     * @returns {boolean}
-     */
-    List.prototype.containsFilter = function (obj, options) {
-        return (obj && obj.toString().indexOf(options.condition) > -1);
-    };
-    List.prototype.regexpFilter = function (obj, options) {
-        if (!(options.condition instanceof RegExp))
-            throw new Error('Condition must be an instance of RegExp');
-        return (options.condition.test(obj));
-    };
-    /**
-     * Function extracts (using `extractFn` option) values of a property (`filterBy` option) and filters them using
-     * compare function (`filterFn` option, by default Helper.equalsFilter)
-     * Merged options are provided to `extractFn` and `compareFn`
-     * Set `filterBy` to null to force `propertyExtractor` to return object itself
-     * TODO Check memory leaks for all that options links
-     */
-    List.prototype.filter = function (filterConfigs) {
-        var _this = this;
-        var self = this;
-        filterConfigs = (filterConfigs || []).map(function (opt) {
-            return _this.utils.extend({
-                condition: '',
-                extractFn: self.propertyExtractor((opt && opt.filterBy) || null).bind(_this),
-                filterFn: self.equalsFilter.bind(_this)
-            }, opt);
-        });
-        return function (item) {
-            return filterConfigs.reduce(function (pass, opt) {
-                if (!pass || !opt.condition)
-                    return pass;
-                return opt.filterFn(opt.extractFn(item, opt), opt);
-            }, true);
-        };
-    };
-    return List;
-})();
-exports.List = List;
-
-
-/***/ },
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
-var Account = (function (_super) {
-    __extends(Account, _super);
-    function Account() {
-        _super.apply(this, arguments);
-    }
-    Account.prototype.createUrl = function () {
-        return '/account/~';
-    };
-    return Account;
-})(helper.Helper);
-exports.Account = Account;
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var BlockedNumber = (function (_super) {
     __extends(BlockedNumber, _super);
     function BlockedNumber() {
@@ -616,21 +759,20 @@ exports.BlockedNumber = BlockedNumber;
 
 
 /***/ },
-/* 9 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var Call = (function (_super) {
     __extends(Call, _super);
-    function Call(sdk, validator, list, presence, contact) {
-        _super.call(this, sdk, validator, list);
+    function Call(utils, validator, list, presence, contact) {
+        _super.call(this, utils, validator, list);
         this.contact = contact;
         this.presence = presence;
     }
@@ -852,17 +994,16 @@ exports.Call = Call;
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var Contact = (function (_super) {
     __extends(Contact, _super);
     function Contact() {
@@ -1079,17 +1220,16 @@ exports.Contact = Contact;
 
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var ContactGroup = (function (_super) {
     __extends(ContactGroup, _super);
     function ContactGroup() {
@@ -1109,17 +1249,16 @@ exports.ContactGroup = ContactGroup;
 
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var Conferencing = (function (_super) {
     __extends(Conferencing, _super);
     function Conferencing() {
@@ -1134,17 +1273,16 @@ exports.Conferencing = Conferencing;
 
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var Country = (function (_super) {
     __extends(Country, _super);
     function Country() {
@@ -1159,21 +1297,20 @@ exports.Country = Country;
 
 
 /***/ },
-/* 14 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var Device = (function (_super) {
     __extends(Device, _super);
-    function Device(sdk, validator, list, extension, deviceModel) {
-        _super.call(this, sdk, validator, list);
+    function Device(utils, validator, list, extension, deviceModel) {
+        _super.call(this, utils, validator, list);
         this.extension = extension;
         this.deviceModel = deviceModel;
     }
@@ -1225,17 +1362,16 @@ exports.Device = Device;
 
 
 /***/ },
-/* 15 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var DeviceModel = (function (_super) {
     __extends(DeviceModel, _super);
     function DeviceModel() {
@@ -1253,17 +1389,84 @@ exports.DeviceModel = DeviceModel;
 
 
 /***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var helper = __webpack_require__(6);
+var Extension = (function (_super) {
+    __extends(Extension, _super);
+    function Extension() {
+        _super.apply(this, arguments);
+        this.type = {
+            department: 'Department',
+            user: 'User',
+            announcement: 'Announcement',
+            voicemail: 'Voicemail'
+        };
+    }
+    Extension.prototype.createUrl = function (options, id) {
+        options = options || {};
+        return '/account/~' +
+            (options.departmentId ? '/department/' + options.departmentId + '/members' : '/extension') +
+            (id ? '/' + id : '');
+    };
+    Extension.prototype.isUser = function (extension) {
+        return extension && extension.type == this.type.user;
+    };
+    Extension.prototype.isDepartment = function (extension) {
+        return extension && extension.type == this.type.department;
+    };
+    Extension.prototype.isAnnouncement = function (extension) {
+        return extension && extension.type == this.type.announcement;
+    };
+    Extension.prototype.isVoicemail = function (extension) {
+        return extension && extension.type == this.type.voicemail;
+    };
+    Extension.prototype.comparator = function (options) {
+        return this.list.comparator(this.utils.extend({
+            sortBy: 'extensionNumber',
+            compareFn: this.list.numberComparator
+        }, options));
+    };
+    Extension.prototype.filter = function (options) {
+        options = this.utils.extend({
+            search: '',
+            type: ''
+        }, options);
+        return this.list.filter([
+            { filterBy: 'type', condition: options.type },
+            {
+                condition: options.search.toLocaleLowerCase(),
+                filterFn: this.list.containsFilter,
+                extractFn: function (item) {
+                    return (item.name && (item.name.toLocaleLowerCase() + ' ')) +
+                        (item.extensionNumber && item.extensionNumber.toString().toLocaleLowerCase());
+                }
+            }
+        ]);
+    };
+    return Extension;
+})(helper.Helper);
+exports.Extension = Extension;
+
+
+/***/ },
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var ForwardingNumber = (function (_super) {
     __extends(ForwardingNumber, _super);
     function ForwardingNumber() {
@@ -1307,14 +1510,13 @@ exports.ForwardingNumber = ForwardingNumber;
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var Language = (function (_super) {
     __extends(Language, _super);
     function Language() {
@@ -1332,18 +1534,17 @@ exports.Language = Language;
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var Location = (function (_super) {
     __extends(Location, _super);
-    function Location(sdk, validator, list, state) {
-        _super.call(this, sdk, validator, list);
+    function Location(utils, validator, list, state) {
+        _super.call(this, utils, validator, list);
         this.state = state;
     }
     Location.prototype.createUrl = function () {
@@ -1398,18 +1599,17 @@ exports.Location = Location;
 /* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var Message = (function (_super) {
     __extends(Message, _super);
-    function Message(sdk, validator, list, contact) {
-        _super.call(this, sdk, validator, list);
+    function Message(utils, validator, list, contact) {
+        _super.call(this, utils, validator, list);
         this.contact = contact;
     }
     /**
@@ -1458,18 +1658,11 @@ var Message = (function (_super) {
         message.readStatus = (!!isRead) ? 'Read' : 'Unread';
         return message;
     };
-    Message.prototype.getAttachmentUrl = function (message, i) {
-        return message.attachments[i] ? this.sdk.getPlatform().apiUrl(message.attachments[i].uri, {
-            addMethod: 'GET',
-            addServer: true,
-            addToken: true
-        }) : '';
-    };
     Message.prototype.getAttachmentContentType = function (message, i) {
         return message.attachments[i] ? message.attachments[i].contentType : '';
     };
-    Message.prototype.getSubscription = function (options) {
-        return this.sdk.getSubscription().setEvents([this.createUrl(options)]);
+    Message.prototype.addEventToSubscription = function (subscription, options) {
+        return subscription.setEventFilters([this.createUrl(options)]);
     };
     /**
      * Returns from-phones if inbound (oterwise to-phones)
@@ -1552,14 +1745,13 @@ exports.Message = Message;
 /* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var PhoneNumber = (function (_super) {
     __extends(PhoneNumber, _super);
     function PhoneNumber() {
@@ -1630,18 +1822,17 @@ exports.PhoneNumber = PhoneNumber;
 /* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var Presence = (function (_super) {
     __extends(Presence, _super);
-    function Presence(sdk, validator, list, extension) {
-        _super.call(this, sdk, validator, list);
+    function Presence(utils, validator, list, extension) {
+        _super.call(this, utils, validator, list);
         this.extension = extension;
     }
     Presence.prototype.createUrl = function (options, id) {
@@ -1654,8 +1845,8 @@ var Presence = (function (_super) {
     Presence.prototype.isAvailable = function (presence) {
         return presence && presence.presenceStatus == 'Available';
     };
-    Presence.prototype.getSubscription = function (options, id) {
-        return this.sdk.getSubscription().setEvents([this.createUrl(options, id)]);
+    Presence.prototype.addEventToSubscription = function (subscription, options, id) {
+        return subscription.setEventFilters([this.createUrl(options, id)]);
     };
     Presence.prototype.updateSubscription = function (subscription, //TODO Type
         presences, options) {
@@ -1663,7 +1854,7 @@ var Presence = (function (_super) {
         var events = presences.map(this.getId, this).map(function (id) {
             return _this.createUrl(options, id);
         }, this);
-        subscription.addEvents(events);
+        subscription.addEventFilters(events);
         return subscription;
     };
     Presence.prototype.attachToExtensions = function (extensions, presences, merge) {
@@ -1694,14 +1885,13 @@ exports.Presence = Presence;
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var Ringout = (function (_super) {
     __extends(Ringout, _super);
     function Ringout() {
@@ -1742,14 +1932,13 @@ exports.Ringout = Ringout;
 /* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var Service = (function (_super) {
     __extends(Service, _super);
     function Service() {
@@ -1801,14 +1990,13 @@ exports.Service = Service;
 /* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var ShippingMethod = (function (_super) {
     __extends(ShippingMethod, _super);
     function ShippingMethod() {
@@ -1829,18 +2017,17 @@ exports.ShippingMethod = ShippingMethod;
 /* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var State = (function (_super) {
     __extends(State, _super);
-    function State(sdk, validator, list, country) {
-        _super.call(this, sdk, validator, list);
+    function State(utils, validator, list, country) {
+        _super.call(this, utils, validator, list);
         this.country = country;
     }
     State.prototype.createUrl = function () {
@@ -1869,14 +2056,13 @@ exports.State = State;
 /* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
-/// <reference path="../../externals.d.ts" />
-var __extends = this.__extends || function (d, b) {
+/// <reference path="../externals.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var helper = __webpack_require__(3);
+var helper = __webpack_require__(6);
 var Timezone = (function (_super) {
     __extends(Timezone, _super);
     function Timezone() {

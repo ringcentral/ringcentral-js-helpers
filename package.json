@@ -2,32 +2,32 @@
   "name": "ringcentral-helpers",
   "version": "0.1.0",
   "scripts": {
-    "start": "node server.js",
     "build": "./node_modules/.bin/gulp",
-    "watch": "npm run build -- watch",
+    "watch": "npm run build -- --watch",
     "test": "npm run build && npm run mocha",
     "mocha": "./node_modules/.bin/mocha --recursive ./build/tests/specs.js",
-    "istanbul": "./node_modules/.bin/istanbul cover -x specs.js --dir=./build/coverage --report=lcov --hook-run-in-context ./node_modules/mocha/bin/_mocha -- --reporter spec ./build/test/specs.js"
+    "istanbul": "./node_modules/.bin/istanbul cover -x specs.js --dir=./build/coverage --report=lcov --hook-run-in-context ./node_modules/mocha/bin/_mocha -- --reporter spec ./build/tests/specs.js",
+    "tsd": "tsd reinstall -so"
   },
-  "dependencies": {
-    "ringcentral": "^2.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "chai": "^3.0.0",
-    "glob": "^5.0.13",
+    "glob": "^6.0.1",
     "gulp": "^3.9.0",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.3",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.6",
-    "gulp-webpack-build": "^0.11.1",
-    "istanbul": "^0.3.17",
+    "gulp-webpack-build": "^0.13.1",
+    "istanbul": "^0.4.0",
     "mocha": "^2.2.5",
+    "ringcentral": "^2.*",
     "sinon": "^1.15.4",
     "sinon-chai": "^2.8.0",
-    "ts-loader": "^0.4.6",
-    "webpack": "^1.10.1"
+    "ts-loader": "^0.7.1",
+    "typescript": "^1.6.2",
+    "webpack": "^1.12.6"
   },
   "preferGlobal": false,
   "private": false,
