@@ -1,30 +1,25 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var spy = mocha.sinon.spy;
-var sdk = mocha.sdk;
-var helpers = mocha.helpers;
+import {expect} from '../test/mocha';
+import {call} from './Call';
 
 describe('RingCentralHelpers.Call', function() {
 
     'use strict';
 
-    var Call = helpers.call();
-
     describe('createUrl', function() {
 
         it('returns URL depending on options', function() {
 
-            expect(Call.createUrl()).to.equal('/account/~/extension/~/call-log');
-            expect(Call.createUrl({personal: true})).to.equal('/account/~/extension/~/call-log');
-            expect(Call.createUrl({extensionId: '12345'})).to.equal('/account/~/extension/12345/call-log');
-            expect(Call.createUrl({extensionId: '12345'}, '67890')).to.equal('/account/~/extension/12345/call-log/67890');
+            expect(call.createUrl()).to.equal('/account/~/extension/~/call-log');
+            expect(call.createUrl({personal: true})).to.equal('/account/~/extension/~/call-log');
+            expect(call.createUrl({extensionId: '12345'})).to.equal('/account/~/extension/12345/call-log');
+            expect(call.createUrl({extensionId: '12345'}, '67890')).to.equal('/account/~/extension/12345/call-log/67890');
 
-            expect(Call.createUrl({active: true})).to.equal('/account/~/extension/~/active-calls');
-            expect(Call.createUrl({active: true, personal: true})).to.equal('/account/~/extension/~/active-calls');
-            expect(Call.createUrl({active: true}, 'foo')).to.equal('/account/~/extension/~/active-calls/foo');
-            expect(Call.createUrl({
+            expect(call.createUrl({active: true})).to.equal('/account/~/extension/~/active-calls');
+            expect(call.createUrl({active: true, personal: true})).to.equal('/account/~/extension/~/active-calls');
+            expect(call.createUrl({active: true}, 'foo')).to.equal('/account/~/extension/~/active-calls/foo');
+            expect(call.createUrl({
                 active: true,
                 extensionId: 'bar'
             }, 'foo')).to.equal('/account/~/extension/bar/active-calls/foo');
@@ -55,7 +50,7 @@ describe('RingCentralHelpers.Call', function() {
                     }
                 ];
 
-            Call.attachContacts(contacts, calls);
+            call.attachContacts(contacts, calls);
 
             expect(calls[0].from.contact).to.equal(contacts[0]);
             expect(calls[0].to.contact).to.equal(contacts[1]);
@@ -83,17 +78,17 @@ describe('RingCentralHelpers.Call', function() {
 
         it('returns callerInfo of from or to properties depending on direction', function() {
 
-            expect(Call.getCallerInfo(calls[0]).phoneNumber).to.equal('bar');
-            expect(Call.getCallerInfo(calls[1]).phoneNumber).to.equal('baz');
+            expect(call.getCallerInfo(calls[0]).phoneNumber).to.equal('bar');
+            expect(call.getCallerInfo(calls[1]).phoneNumber).to.equal('baz');
 
         });
 
         it('returms all callerInfos in an order depending on direction', function() {
 
-            expect(Call.getAllCallerInfos(calls[0])[0].phoneNumber).to.equal('bar');
-            expect(Call.getAllCallerInfos(calls[0])[1].phoneNumber).to.equal('foo');
-            expect(Call.getAllCallerInfos(calls[1])[0].phoneNumber).to.equal('baz');
-            expect(Call.getAllCallerInfos(calls[1])[1].phoneNumber).to.equal('qux');
+            expect(call.getAllCallerInfos(calls[0])[0].phoneNumber).to.equal('bar');
+            expect(call.getAllCallerInfos(calls[0])[1].phoneNumber).to.equal('foo');
+            expect(call.getAllCallerInfos(calls[1])[0].phoneNumber).to.equal('baz');
+            expect(call.getAllCallerInfos(calls[1])[1].phoneNumber).to.equal('qux');
 
         });
 
@@ -103,15 +98,15 @@ describe('RingCentralHelpers.Call', function() {
 
         it('formats duration', function() {
 
-            expect(Call.formatDuration({duration: 0.5})).to.equal('00:00');
-            expect(Call.formatDuration({duration: 0})).to.equal('00:00');
-            expect(Call.formatDuration({duration: 1})).to.equal('00:01');
-            expect(Call.formatDuration({duration: 1.5})).to.equal('00:01');
-            expect(Call.formatDuration({duration: 10})).to.equal('00:10');
-            expect(Call.formatDuration({duration: 60})).to.equal('01:00');
-            expect(Call.formatDuration({duration: 70})).to.equal('01:10');
-            expect(Call.formatDuration({duration: 60 * 60})).to.equal('1:00:00');
-            expect(Call.formatDuration({duration: 60 * 60 * 10 + 70})).to.equal('10:01:10');
+            expect(call.formatDuration({duration: 0.5})).to.equal('00:00');
+            expect(call.formatDuration({duration: 0})).to.equal('00:00');
+            expect(call.formatDuration({duration: 1})).to.equal('00:01');
+            expect(call.formatDuration({duration: 1.5})).to.equal('00:01');
+            expect(call.formatDuration({duration: 10})).to.equal('00:10');
+            expect(call.formatDuration({duration: 60})).to.equal('01:00');
+            expect(call.formatDuration({duration: 70})).to.equal('01:10');
+            expect(call.formatDuration({duration: 60 * 60})).to.equal('1:00:00');
+            expect(call.formatDuration({duration: 60 * 60 * 10 + 70})).to.equal('10:01:10');
 
         });
 
@@ -128,9 +123,9 @@ describe('RingCentralHelpers.Call', function() {
 
         it('allows to filter calls by type and direction', function() {
 
-            expect(calls.filter(Call.filter({type: 'Voice', direction: 'Inbound'})).length).to.equal(1);
-            expect(calls.filter(Call.filter({type: 'Voice'})).length).to.equal(2);
-            expect(calls.filter(Call.filter({direction: 'Inbound'})).length).to.equal(2);
+            expect(calls.filter(call.filter({type: 'Voice', direction: 'Inbound'})).length).to.equal(1);
+            expect(calls.filter(call.filter({type: 'Voice'})).length).to.equal(2);
+            expect(calls.filter(call.filter({direction: 'Inbound'})).length).to.equal(2);
 
         });
 
@@ -140,7 +135,7 @@ describe('RingCentralHelpers.Call', function() {
 
         it('allows to sort calls by startTime by default', function() {
 
-            var sorted = [].concat(calls).sort(Call.comparator());
+            var sorted = [].concat(calls).sort(call.comparator());
 
             expect(sorted[0]).to.equal(calls[3]);
             expect(sorted[1]).to.equal(calls[2]);
@@ -411,9 +406,9 @@ describe('RingCentralHelpers.Call', function() {
 
             var presenceCalls = [];
 
-            presenceCalls = Call.mergePresenceCalls(presenceCalls, mocks.initial.presence);
+            presenceCalls = call.mergePresenceCalls(presenceCalls, mocks.initial.presence);
 
-            presenceCalls = Call.mergePresenceCalls(presenceCalls, mocks.ringing.presence);
+            presenceCalls = call.mergePresenceCalls(presenceCalls, mocks.ringing.presence);
 
             expect(presenceCalls.length).to.equal(1);
             expect(presenceCalls[0].startTime).to.not.equal('');
@@ -423,7 +418,7 @@ describe('RingCentralHelpers.Call', function() {
 
             setTimeout(function() {
 
-                presenceCalls = Call.mergePresenceCalls(presenceCalls, mocks.pickup.presence);
+                presenceCalls = call.mergePresenceCalls(presenceCalls, mocks.pickup.presence);
 
                 expect(presenceCalls.length).to.equal(1);
                 expect(presenceCalls[0].startTime).to.equal(oldTime);
@@ -436,16 +431,16 @@ describe('RingCentralHelpers.Call', function() {
 
         it('sets appropriate statuses', function(done) {
 
-            var presenceCalls = Call.mergePresenceCalls([], mocks.initial.presence);
+            var presenceCalls = call.mergePresenceCalls([], mocks.initial.presence);
 
-            presenceCalls = Call.mergePresenceCalls(presenceCalls, mocks.ringing.presence);
+            presenceCalls = call.mergePresenceCalls(presenceCalls, mocks.ringing.presence);
 
             expect(presenceCalls[0].result).to.equal('In Progress');
             expect(presenceCalls[0].telephonyStatus).to.equal('Ringing');
 
             setTimeout(function() {
 
-                presenceCalls = Call.mergePresenceCalls(presenceCalls, mocks.pickup.presence);
+                presenceCalls = call.mergePresenceCalls(presenceCalls, mocks.pickup.presence);
 
                 expect(presenceCalls[0].result).to.equal('In Progress');
                 expect(presenceCalls[0].telephonyStatus).to.equal('CallConnected');
@@ -454,7 +449,7 @@ describe('RingCentralHelpers.Call', function() {
 
             setTimeout(function() {
 
-                presenceCalls = Call.mergePresenceCalls(presenceCalls, mocks.hangup.presence);
+                presenceCalls = call.mergePresenceCalls(presenceCalls, mocks.hangup.presence);
                 expect(presenceCalls[0].result).to.equal('NoCall');
                 expect(presenceCalls[0].telephonyStatus).to.equal('NoCall');
 
@@ -470,9 +465,9 @@ describe('RingCentralHelpers.Call', function() {
 
         it('merges together calls from presence, active calls, calls', function() {
 
-            var presenceCalls = Call.mergePresenceCalls([], mocks.ringing.presence),
-                allCalls = Call.mergeAll(presenceCalls, mocks.ringing.calls, mocks.ringing.activeCalls)
-                    .sort(Call.comparator())
+            var presenceCalls = call.mergePresenceCalls([], mocks.ringing.presence),
+                allCalls = call.mergeAll(presenceCalls, mocks.ringing.calls, mocks.ringing.activeCalls)
+                    .sort(call.comparator())
                     .reverse();
 
             expect(allCalls.length).to.equal(3);

@@ -1,24 +1,19 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var spy = mocha.sinon.spy;
-var sdk = mocha.sdk;
-var helpers = mocha.helpers;
+import {expect, getSDK} from '../test/mocha';
+import {presence} from './Presence';
 
 describe('RingCentralHelpers.Presence', function() {
 
     'use strict';
 
-    var Presence = helpers.presence();
-
     describe('createUrl', function() {
 
         it('returns URL depending on options', function() {
 
-            expect(Presence.createUrl()).to.equal('/account/~/extension/~/presence');
-            expect(Presence.createUrl({}, 'foo')).to.equal('/account/~/extension/foo/presence');
-            expect(Presence.createUrl({detailed: true}, 'foo')).to.equal('/account/~/extension/foo/presence?detailedTelephonyState=true');
+            expect(presence.createUrl()).to.equal('/account/~/extension/~/presence');
+            expect(presence.createUrl({}, 'foo')).to.equal('/account/~/extension/foo/presence');
+            expect(presence.createUrl({detailed: true}, 'foo')).to.equal('/account/~/extension/foo/presence?detailedTelephonyState=true');
 
         });
 
@@ -40,7 +35,7 @@ describe('RingCentralHelpers.Presence', function() {
                     {id: 'qux'}
                 ];
 
-            Presence.attachToExtensions(extensions, presences);
+            presence.attachToExtensions(extensions, presences);
 
             expect(extensions[0].presence).to.equal(presences[0]);
             expect(extensions[1].presence).to.equal(presences[1]);
@@ -60,7 +55,7 @@ describe('RingCentralHelpers.Presence', function() {
 
             expect(extensions[0].presence.foo).to.equal('baz');
 
-            Presence.attachToExtensions(extensions, presences, true);
+            presence.attachToExtensions(extensions, presences, true);
 
             expect(extensions[0].presence.foo).to.equal('bar');
             expect(extensions[0].presence.presenceStatus).to.equal('Available');
@@ -73,7 +68,7 @@ describe('RingCentralHelpers.Presence', function() {
 
         it('returns pre-configured Subscription object', function() {
 
-            var notificaction = Presence.addEventToSubscription(sdk.createSubscription(), {detailed: true}, 'foo');
+            var notificaction = presence.addEventToSubscription(getSDK().createSubscription(), {detailed: true}, 'foo');
 
             expect(notificaction.eventFilters().length).to.equal(1);
             expect(notificaction.eventFilters()[0]).to.equal('/account/~/extension/foo/presence?detailedTelephonyState=true');
@@ -86,11 +81,11 @@ describe('RingCentralHelpers.Presence', function() {
 
         it('adds proper events to Subscription object', function() {
 
-            var notificaction = sdk.createSubscription();
+            var notificaction = getSDK().createSubscription();
 
             expect(notificaction.eventFilters().length).to.equal(0);
 
-            Presence.updateSubscription(notificaction, [{extension: {id: 'foo'}}, {extension: {id: 'bar'}}], {detailed: true});
+            presence.updateSubscription(notificaction, [{extension: {id: 'foo'}}, {extension: {id: 'bar'}}], {detailed: true});
 
             expect(notificaction.eventFilters().length).to.equal(2);
             expect(notificaction.eventFilters()[0]).to.equal('/account/~/extension/foo/presence?detailedTelephonyState=true');

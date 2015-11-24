@@ -1,7 +1,7 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
-import validator = require('../core/Validator');
+import * as helper from '../core/Helper';
+import * as validator from '../core/Validator';
 
 export class ContactGroup extends helper.Helper {
 
@@ -11,8 +11,8 @@ export class ContactGroup extends helper.Helper {
 
     validate(item:IContactGroup) {
 
-        return this.validator.validate([
-            {field: 'groupName', validator: this.validator.required(item && item.groupName)}
+        return validator.validate([
+            {field: 'groupName', validator: validator.required(item && item.groupName)}
         ]);
 
     }
@@ -24,3 +24,5 @@ export interface IContactGroup extends helper.IHelperObject {
     groupName?:string;
     contactsCount?:number;
 }
+
+export var contactGroup = new ContactGroup();

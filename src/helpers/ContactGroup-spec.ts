@@ -1,23 +1,18 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var spy = mocha.sinon.spy;
-var sdk = mocha.sdk;
-var helpers = mocha.helpers;
+import {expect} from '../test/mocha';
+import {contactGroup} from './ContactGroup';
 
 describe('RingCentralHelpers.ContactGroup', function() {
 
     'use strict';
 
-    var ContactGroup = helpers.contactGroup();
-
     describe('createUrl', function() {
 
         it('returns URL depending on options', function() {
 
-            expect(ContactGroup.createUrl()).to.equal('/account/~/extension/~/address-book/group');
-            expect(ContactGroup.createUrl({}, 'foo')).to.equal('/account/~/extension/~/address-book/group/foo');
+            expect(contactGroup.createUrl()).to.equal('/account/~/extension/~/address-book/group');
+            expect(contactGroup.createUrl({}, 'foo')).to.equal('/account/~/extension/~/address-book/group/foo');
 
         });
 
@@ -27,7 +22,7 @@ describe('RingCentralHelpers.ContactGroup', function() {
 
         it('performs basic validation', function() {
 
-            var res = ContactGroup.validate({});
+            var res = contactGroup.validate({});
 
             expect(res.isValid).to.equal(false);
             expect(res.errors['groupName'][0]).to.be.instanceOf(Error);
@@ -37,7 +32,7 @@ describe('RingCentralHelpers.ContactGroup', function() {
 
         it('passes validation if values are correct', function() {
 
-            var res = ContactGroup.validate({groupName: 'foo'});
+            var res = contactGroup.validate({groupName: 'foo'});
 
             expect(res.isValid).to.equal(true);
             expect(res.errors).to.deep.equal({});

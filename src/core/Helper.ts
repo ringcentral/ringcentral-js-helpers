@@ -1,23 +1,15 @@
 /// <reference path="../externals.d.ts" />
 
-import validator = require('./Validator');
-import list = require('./List');
-import utils = require('./Utils');
+import * as validator from './Validator';
+import * as list from './List';
+import * as utils from './Utils';
 
 export class Helper {
 
     protected defaultProperty:string = 'id';
 
-    protected utils:utils.Utils;
-    protected validator:validator.Validator;
-    protected list:list.List;
-
-    constructor(utils:utils.Utils, validator:validator.Validator, list:list.List) {
-
-        this.utils = utils;
-        this.validator = validator;
-        this.list = list;
-
+    constructor() {
+        this.getId = this.getId.bind(this);
     }
 
     createUrl(options?:any, id?:string) {
@@ -69,7 +61,7 @@ export class Helper {
      */
     loadRequest(object?, options?:any) {
 
-        return this.utils.extend(options || {}, {
+        return utils.extend(options || {}, {
             url: (options && options.url) || (object && this.getUri(object)) || this.createUrl(),
             method: (options && options.method) || 'GET'
         });
@@ -84,7 +76,7 @@ export class Helper {
 
         if (!object && !(options && (options.post || options.body))) throw new Error('No Object');
 
-        return this.utils.extend(options || {}, {
+        return utils.extend(options || {}, {
             method: (options && options.method) || (this.isNew(object) ? 'POST' : 'PUT'),
             url: (options && options.url) || this.getUri(object) || this.createUrl(),
             body: (options && (options.body || options.post)) || object
@@ -102,7 +94,7 @@ export class Helper {
 
         if (!this.getUri(object) && !(options && options.url)) throw new Error('Object has to be not new or URL must be provided');
 
-        return this.utils.extend(options || {}, {
+        return utils.extend(options || {}, {
             method: (options && options.method) || 'DELETE',
             url: (options && options.url) || this.getUri(object)
         });
@@ -146,7 +138,7 @@ export class Helper {
      */
     index(array:IHelperObject[], getIdFn?:(obj:IHelperObject)=>string, gather?:boolean):any {
 
-        getIdFn = getIdFn || this.getId.bind(this);
+        getIdFn = getIdFn || this.getId;
         array = array || [];
 
         return array.reduce((index, item) => {
@@ -178,7 +170,7 @@ export class Helper {
           supplement:IHelperObject[],
           getIdFn?:(obj:IHelperObject)=>string, mergeItems?:boolean):any {
 
-        getIdFn = getIdFn || this.getId.bind(this);
+        getIdFn = getIdFn || this.getId;
         target = target || [];
         supplement = supplement || [];
 
@@ -191,7 +183,7 @@ export class Helper {
 
                 if (newItem) updatedIDs.push(id);
 
-                return newItem ? (mergeItems ? this.utils.extend(item, newItem) : newItem) : item;
+                return newItem ? (mergeItems ? utils.extend(item, newItem) : newItem) : item;
 
             });
 

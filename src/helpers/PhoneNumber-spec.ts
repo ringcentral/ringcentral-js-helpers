@@ -1,16 +1,11 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var spy = mocha.sinon.spy;
-var sdk = mocha.sdk;
-var helpers = mocha.helpers;
+import {expect} from '../test/mocha';
+import {phoneNumber} from './PhoneNumber';
 
 describe('RingCentralHelpers.ForwardingNumber', function() {
 
     'use strict';
-
-    var PhoneNumber = helpers.phoneNumber();
 
     var phoneNumbers = [
         {usageType: 'MainCompanyNumber', paymentType: 'TollFree', type: 'VoiceFax', phoneNumber: '1', features: []},
@@ -33,11 +28,11 @@ describe('RingCentralHelpers.ForwardingNumber', function() {
 
         it('returns URL depending on options', function() {
 
-            expect(PhoneNumber.createUrl()).to.equal('/account/~/phone-number');
-            expect(PhoneNumber.createUrl({extensionId: 'foo'})).to.equal('/account/~/extension/foo/phone-number');
-            expect(PhoneNumber.createUrl({extensionId: 'foo'}, 'bar')).to.equal('/account/~/extension/foo/phone-number/bar');
-            expect(PhoneNumber.createUrl({}, 'bar')).to.equal('/account/~/phone-number/bar');
-            expect(PhoneNumber.createUrl({lookup: true})).to.equal('/number-pool/lookup');
+            expect(phoneNumber.createUrl()).to.equal('/account/~/phone-number');
+            expect(phoneNumber.createUrl({extensionId: 'foo'})).to.equal('/account/~/extension/foo/phone-number');
+            expect(phoneNumber.createUrl({extensionId: 'foo'}, 'bar')).to.equal('/account/~/extension/foo/phone-number/bar');
+            expect(phoneNumber.createUrl({}, 'bar')).to.equal('/account/~/phone-number/bar');
+            expect(phoneNumber.createUrl({lookup: true})).to.equal('/number-pool/lookup');
 
         });
 
@@ -54,7 +49,7 @@ describe('RingCentralHelpers.ForwardingNumber', function() {
                 {usageType: '1', paymentType: '1', type: '1'}
             ];
 
-            var sorted = [].concat(phoneNumbers).sort(PhoneNumber.comparator());
+            var sorted = [].concat(phoneNumbers).sort(phoneNumber.comparator());
 
             expect(sorted[0]).to.equal(phoneNumbers[3]);
             expect(sorted[1]).to.equal(phoneNumbers[2]);
@@ -69,9 +64,8 @@ describe('RingCentralHelpers.ForwardingNumber', function() {
 
         it('provides functionality to filter by feature', function() {
 
-            var filtered = [];
+            var filtered = phoneNumbers.filter(phoneNumber.filter({features: ['SmsSender']}));
 
-            filtered = phoneNumbers.filter(PhoneNumber.filter({features: ['SmsSender']}));
             expect(filtered.length).to.equal(1);
             expect(filtered[0]).to.equal(phoneNumbers[4]);
 

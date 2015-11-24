@@ -1,16 +1,11 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var spy = mocha.sinon.spy;
-var sdk = mocha.sdk;
-var helpers = mocha.helpers;
+import {expect} from '../test/mocha';
+import {extension} from './Extension';
 
 describe('RingCentralHelpers.Extension', function() {
 
     'use strict';
-
-    var Extension = helpers.extension();
 
     var extensions = [
         {name: 'One One One', extensionNumber: 111, type: 'foo'},
@@ -21,10 +16,10 @@ describe('RingCentralHelpers.Extension', function() {
 
         it('returns URL depending on options', function() {
 
-            expect(Extension.createUrl()).to.equal('/account/~/extension');
-            expect(Extension.createUrl({}, 'foo')).to.equal('/account/~/extension/foo');
-            expect(Extension.createUrl({departmentId: 'foo'})).to.equal('/account/~/department/foo/members');
-            expect(Extension.createUrl({departmentId: 'foo'}, 'bar')).to.equal('/account/~/department/foo/members/bar');
+            expect(extension.createUrl()).to.equal('/account/~/extension');
+            expect(extension.createUrl({}, 'foo')).to.equal('/account/~/extension/foo');
+            expect(extension.createUrl({departmentId: 'foo'})).to.equal('/account/~/department/foo/members');
+            expect(extension.createUrl({departmentId: 'foo'}, 'bar')).to.equal('/account/~/department/foo/members/bar');
 
         });
 
@@ -34,7 +29,7 @@ describe('RingCentralHelpers.Extension', function() {
 
         it('allows to sort extensions by extensionNumber', function() {
 
-            var exts = [].concat(extensions).sort(Extension.comparator());
+            var exts = [].concat(extensions).sort(extension.comparator());
 
             expect(exts[0]).to.equal(extensions[1]);
             expect(exts[1]).to.equal(extensions[0]);
@@ -47,14 +42,14 @@ describe('RingCentralHelpers.Extension', function() {
 
         it('allows to filter extensions by name and extensionNumber', function() {
 
-            expect(extensions.filter(Extension.filter({search: 'One'})).length).to.equal(2);
-            expect(extensions.filter(Extension.filter({search: '21'})).length).to.equal(1);
+            expect(extensions.filter(extension.filter({search: 'One'})).length).to.equal(2);
+            expect(extensions.filter(extension.filter({search: '21'})).length).to.equal(1);
 
         });
 
         it('allows to filter extensions by type', function() {
 
-            expect(extensions.filter(Extension.filter({type: 'foo'})).length).to.equal(1);
+            expect(extensions.filter(extension.filter({type: 'foo'})).length).to.equal(1);
 
         });
 
@@ -64,20 +59,20 @@ describe('RingCentralHelpers.Extension', function() {
 
         it('provides type detection', function() {
 
-            expect(Extension.isUser()).to.equal(undefined);
-            expect(Extension.isDepartment()).to.equal(undefined);
-            expect(Extension.isAnnouncement()).to.equal(undefined);
-            expect(Extension.isVoicemail()).to.equal(undefined);
+            expect(extension.isUser()).to.equal(undefined);
+            expect(extension.isDepartment()).to.equal(undefined);
+            expect(extension.isAnnouncement()).to.equal(undefined);
+            expect(extension.isVoicemail()).to.equal(undefined);
 
-            expect(Extension.isUser({type: 'foo'})).to.equal(false);
-            expect(Extension.isDepartment({type: 'foo'})).to.equal(false);
-            expect(Extension.isAnnouncement({type: 'foo'})).to.equal(false);
-            expect(Extension.isVoicemail({type: 'foo'})).to.equal(false);
+            expect(extension.isUser({type: 'foo'})).to.equal(false);
+            expect(extension.isDepartment({type: 'foo'})).to.equal(false);
+            expect(extension.isAnnouncement({type: 'foo'})).to.equal(false);
+            expect(extension.isVoicemail({type: 'foo'})).to.equal(false);
 
-            expect(Extension.isUser({type: 'User'})).to.equal(true);
-            expect(Extension.isDepartment({type: 'Department'})).to.equal(true);
-            expect(Extension.isAnnouncement({type: 'Announcement'})).to.equal(true);
-            expect(Extension.isVoicemail({type: 'Voicemail'})).to.equal(true);
+            expect(extension.isUser({type: 'User'})).to.equal(true);
+            expect(extension.isDepartment({type: 'Department'})).to.equal(true);
+            expect(extension.isAnnouncement({type: 'Announcement'})).to.equal(true);
+            expect(extension.isVoicemail({type: 'Voicemail'})).to.equal(true);
 
         });
 

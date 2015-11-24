@@ -1,6 +1,6 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
+import * as helper from '../core/Helper';
 
 export class DeviceModel extends helper.Helper {
 
@@ -18,6 +18,8 @@ export class DeviceModel extends helper.Helper {
     }
 
 }
+
+export var deviceModel = new DeviceModel();
 
 export interface IDeviceModel extends helper.IHelperObject {
     sku?:string;

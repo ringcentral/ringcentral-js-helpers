@@ -1,16 +1,11 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var spy = mocha.sinon.spy;
-var sdk = mocha.sdk;
-var helpers = mocha.helpers;
+import {expect, getSDK} from '../test/mocha';
+import {message} from './Message';
 
 describe('RingCentralHelpers.Message', function() {
 
     'use strict';
-
-    var Message = helpers.message();
 
     describe('attachContacts', function() {
 
@@ -39,7 +34,7 @@ describe('RingCentralHelpers.Message', function() {
                     }
                 ];
 
-            Message.attachContacts(contacts, messages);
+            message.attachContacts(contacts, messages);
 
             expect(messages[0].from.contact).to.equal(contacts[0]);
             expect(messages[0].to[0].contact).to.equal(contacts[1]);
@@ -76,25 +71,25 @@ describe('RingCentralHelpers.Message', function() {
 
         it('returns callerInfo of from or to properties depending on direction', function() {
 
-            expect(Message.getCallerInfos(messages[0]).length).to.equal(2);
-            expect(Message.getCallerInfos(messages[0])[0].phoneNumber).to.equal('bar');
-            expect(Message.getCallerInfos(messages[0])[1].phoneNumber).to.equal('baz');
+            expect(message.getCallerInfos(messages[0]).length).to.equal(2);
+            expect(message.getCallerInfos(messages[0])[0].phoneNumber).to.equal('bar');
+            expect(message.getCallerInfos(messages[0])[1].phoneNumber).to.equal('baz');
 
-            expect(Message.getCallerInfos(messages[1]).length).to.equal(1);
-            expect(Message.getCallerInfos(messages[1])[0].phoneNumber).to.equal('baz');
+            expect(message.getCallerInfos(messages[1]).length).to.equal(1);
+            expect(message.getCallerInfos(messages[1])[0].phoneNumber).to.equal('baz');
 
         });
 
         it('returms all callerInfos in an order depending on direction', function() {
 
-            expect(Message.getAllCallerInfos(messages[0]).length).to.equal(3);
-            expect(Message.getAllCallerInfos(messages[0])[0].phoneNumber).to.equal('bar');
-            expect(Message.getAllCallerInfos(messages[0])[1].phoneNumber).to.equal('baz');
-            expect(Message.getAllCallerInfos(messages[0])[2].phoneNumber).to.equal('foo');
+            expect(message.getAllCallerInfos(messages[0]).length).to.equal(3);
+            expect(message.getAllCallerInfos(messages[0])[0].phoneNumber).to.equal('bar');
+            expect(message.getAllCallerInfos(messages[0])[1].phoneNumber).to.equal('baz');
+            expect(message.getAllCallerInfos(messages[0])[2].phoneNumber).to.equal('foo');
 
-            expect(Message.getAllCallerInfos(messages[1]).length).to.equal(2);
-            expect(Message.getAllCallerInfos(messages[1])[0].phoneNumber).to.equal('baz');
-            expect(Message.getAllCallerInfos(messages[1])[1].phoneNumber).to.equal('qux');
+            expect(message.getAllCallerInfos(messages[1]).length).to.equal(2);
+            expect(message.getAllCallerInfos(messages[1])[0].phoneNumber).to.equal('baz');
+            expect(message.getAllCallerInfos(messages[1])[1].phoneNumber).to.equal('qux');
 
         });
 
@@ -104,7 +99,7 @@ describe('RingCentralHelpers.Message', function() {
 
         it('creates a short message out of full message structure', function() {
 
-            var message = {
+            var msg = {
                     direction: 'Outbound',
                     subject: 'qux',
                     from: {
@@ -115,13 +110,13 @@ describe('RingCentralHelpers.Message', function() {
                         {phoneNumber: 'baz'}
                     ]
                 },
-                short = <any>Message.shorten(message);
+                short = <any>message.shorten(msg);
 
             expect(short.direction).to.be.an('undefined');
             expect(short.subject).to.be.an('undefined');
-            expect(short.text).to.equal(message.subject);
-            expect(short.from).to.equal(message.from);
-            expect(short.to).to.equal(message.to);
+            expect(short.text).to.equal(msg.subject);
+            expect(short.from).to.equal(msg.from);
+            expect(short.to).to.equal(msg.to);
 
         });
 
@@ -131,15 +126,15 @@ describe('RingCentralHelpers.Message', function() {
 
         it('produces various urls depending on options', function() {
 
-            expect(Message.createUrl()).to.equal('/account/~/extension/~/message-store');
-            expect(Message.createUrl({}, 1)).to.equal('/account/~/extension/~/message-store/1');
-            expect(Message.createUrl({extensionId: 'foo'}, '1')).to.equal('/account/~/extension/foo/message-store/1');
-            expect(Message.createUrl({
+            expect(message.createUrl()).to.equal('/account/~/extension/~/message-store');
+            expect(message.createUrl({}, 1)).to.equal('/account/~/extension/~/message-store/1');
+            expect(message.createUrl({extensionId: 'foo'}, '1')).to.equal('/account/~/extension/foo/message-store/1');
+            expect(message.createUrl({
                 extensionId: 'foo',
                 sync: true
             }, '1')).to.equal('/account/~/extension/foo/message-sync');
-            expect(Message.createUrl({extensionId: 'foo', sms: true}, '1')).to.equal('/account/~/extension/foo/sms');
-            expect(Message.createUrl({
+            expect(message.createUrl({extensionId: 'foo', sms: true}, '1')).to.equal('/account/~/extension/foo/sms');
+            expect(message.createUrl({
                 extensionId: 'foo',
                 pager: true
             }, '1')).to.equal('/account/~/extension/foo/company-pager');
@@ -152,8 +147,8 @@ describe('RingCentralHelpers.Message', function() {
 
         it('produces various urls depending on options', function() {
 
-            expect(Message.loadRequest().url).to.equal('/account/~/extension/~/message-store');
-            expect(Message.saveRequest({}).url).to.equal('/account/~/extension/~/message-store');
+            expect(message.loadRequest().url).to.equal('/account/~/extension/~/message-store');
+            expect(message.saveRequest({}).url).to.equal('/account/~/extension/~/message-store');
 
         });
 
@@ -161,7 +156,7 @@ describe('RingCentralHelpers.Message', function() {
 
     describe('getAttachmentContentType', function() {
 
-        var message = {
+        var msg = {
                 attachments: [
                     {
                         uri: '/account/~/extension/~/message-store/1/attachment/---1---',
@@ -176,9 +171,9 @@ describe('RingCentralHelpers.Message', function() {
 
         it('gives a content type, empty string if not found', function() {
 
-            expect(Message.getAttachmentContentType(message, 0)).to.equal('foo');
-            expect(Message.getAttachmentContentType(message, 1)).to.equal('bar');
-            expect(Message.getAttachmentContentType(message, 2)).to.equal('');
+            expect(message.getAttachmentContentType(msg, 0)).to.equal('foo');
+            expect(message.getAttachmentContentType(msg, 1)).to.equal('bar');
+            expect(message.getAttachmentContentType(msg, 2)).to.equal('');
 
         });
 
@@ -216,7 +211,7 @@ describe('RingCentralHelpers.Message', function() {
 
         it('rules out dead objects by default', function() {
 
-            var filtered = messages.filter(Message.filter());
+            var filtered = messages.filter(message.filter());
 
             expect(filtered.length).to.equal(2);
             expect(filtered[0]).to.equal(messages[2]);
@@ -228,29 +223,29 @@ describe('RingCentralHelpers.Message', function() {
 
             var filtered;
 
-            filtered = messages.filter(Message.filter({alive: false}));
+            filtered = messages.filter(message.filter({alive: false}));
 
             expect(filtered.length).to.equal(4);
 
-            filtered = messages.filter(Message.filter({alive: false, direction: 'Inbound'}));
+            filtered = messages.filter(message.filter({alive: false, direction: 'Inbound'}));
 
             expect(filtered.length).to.equal(1);
             expect(filtered[0]).to.equal(messages[1]);
 
-            filtered = messages.filter(Message.filter({alive: false, readStatus: 'Read'}));
+            filtered = messages.filter(message.filter({alive: false, readStatus: 'Read'}));
 
             expect(filtered.length).to.equal(3);
             expect(filtered[0]).to.equal(messages[0]);
             expect(filtered[1]).to.equal(messages[1]);
             expect(filtered[2]).to.equal(messages[3]);
 
-            filtered = messages.filter(Message.filter({alive: false, conversationId: '2'}));
+            filtered = messages.filter(message.filter({alive: false, conversationId: '2'}));
 
             expect(filtered.length).to.equal(2);
             expect(filtered[0]).to.equal(messages[2]);
             expect(filtered[1]).to.equal(messages[3]);
 
-            filtered = messages.filter(Message.filter({search: 'bar'}));
+            filtered = messages.filter(message.filter({search: 'bar'}));
 
             expect(filtered.length).to.equal(1);
             expect(filtered[0]).to.equal(messages[3]);
@@ -269,7 +264,7 @@ describe('RingCentralHelpers.Message', function() {
                 {creationTime: '2014-08-26T07:46:06.781Z'}
             ];
 
-            var sorted = [].concat(messages).sort(Message.comparator());
+            var sorted = [].concat(messages).sort(message.comparator());
 
             expect(sorted[0]).to.equal(messages[2]);
             expect(sorted[1]).to.equal(messages[1]);
@@ -283,7 +278,7 @@ describe('RingCentralHelpers.Message', function() {
 
         it('returns pre-configured Subscription object', function() {
 
-            var notificaction = Message.addEventToSubscription(sdk.createSubscription(), {extensionId: 'foo'});
+            var notificaction = message.addEventToSubscription(getSDK().createSubscription(), {extensionId: 'foo'});
 
             expect(notificaction.eventFilters().length).to.equal(1);
             expect(notificaction.eventFilters()[0]).to.equal('/account/~/extension/foo/message-store');
@@ -296,7 +291,7 @@ describe('RingCentralHelpers.Message', function() {
 
         it('performs basic SmsMessage validation', function() {
 
-            var res = Message.validateSMS({});
+            var res = message.validateSMS({});
 
             expect(res.isValid).to.equal(false);
             expect(res.errors['to'][0]).to.be.instanceOf(Error);
@@ -307,7 +302,7 @@ describe('RingCentralHelpers.Message', function() {
 
         it('performs basic PagerMessage validation', function() {
 
-            var res = Message.validatePager({});
+            var res = message.validatePager({});
 
             expect(res.isValid).to.equal(false);
             expect(res.errors['to'][0]).to.be.instanceOf(Error);
@@ -318,7 +313,7 @@ describe('RingCentralHelpers.Message', function() {
 
         it('passes SmsMessage validation if values are correct', function() {
 
-            var res = Message.validateSMS({to: [{phoneNumber: 'foo'}], from: {phoneNumber: 'foo'}, subject: 'foo'});
+            var res = message.validateSMS({to: [{phoneNumber: 'foo'}], from: {phoneNumber: 'foo'}, subject: 'foo'});
 
             expect(res.isValid).to.equal(true);
             expect(res.errors).to.deep.equal({});
@@ -327,7 +322,7 @@ describe('RingCentralHelpers.Message', function() {
 
         it('passes PagerMessage validation if values are correct', function() {
 
-            var res = Message.validatePager(<any>{
+            var res = message.validatePager(<any>{
                 to: {extensionNumber: 'foo'},
                 from: {extensionNumber: 'foo'},
                 subject: 'foo'

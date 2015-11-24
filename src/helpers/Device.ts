@@ -1,27 +1,15 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
-import list = require('../core/List');
-import utils = require('../core/Utils');
-import validator = require('../core/Validator');
-import extension = require('./Extension');
-import deviceModel = require('./DeviceModel');
-import shippingMethod = require('./ShippingMethod');
-import phoneNumber = require('./PhoneNumber');
+import * as helper from '../core/Helper';
+import * as list from '../core/List';
+import * as utils from '../core/Utils';
+import * as validator from '../core/Validator';
+import * as extension from './Extension';
+import * as deviceModel from './DeviceModel';
+import * as shippingMethod from './ShippingMethod';
+import * as phoneNumber from './PhoneNumber';
 
 export class Device extends helper.Helper {
-
-    private extension:extension.Extension;
-    private deviceModel:deviceModel.DeviceModel;
-
-    constructor(utils:utils.Utils, validator:validator.Validator, list:list.List, extension:extension.Extension, deviceModel:deviceModel.DeviceModel) {
-
-        super(utils, validator, list);
-
-        this.extension = extension;
-        this.deviceModel = deviceModel;
-
-    }
 
     createUrl(options?:IDeviceOptions, id?:string) {
 
@@ -41,38 +29,40 @@ export class Device extends helper.Helper {
      */
     validate(item:IDevice) {
 
-        return this.validator.validate([
+        return validator.validate([
             {
                 field: 'emergencyServiceAddress-street',
-                validator: this.validator.required(item && item.emergencyServiceAddress && item.emergencyServiceAddress.street)
+                validator: validator.required(item && item.emergencyServiceAddress && item.emergencyServiceAddress.street)
             },
             {
                 field: 'emergencyServiceAddress-city',
-                validator: this.validator.required(item && item.emergencyServiceAddress && item.emergencyServiceAddress.city)
+                validator: validator.required(item && item.emergencyServiceAddress && item.emergencyServiceAddress.city)
             },
             {
                 field: 'emergencyServiceAddress-state',
-                validator: this.validator.required(item && item.emergencyServiceAddress && item.emergencyServiceAddress.state)
+                validator: validator.required(item && item.emergencyServiceAddress && item.emergencyServiceAddress.state)
             },
             {
                 field: 'emergencyServiceAddress-country',
-                validator: this.validator.required(item && item.emergencyServiceAddress && item.emergencyServiceAddress.country)
+                validator: validator.required(item && item.emergencyServiceAddress && item.emergencyServiceAddress.country)
             },
             {
                 field: 'emergencyServiceAddress-zip',
-                validator: this.validator.required(item && item.emergencyServiceAddress && item.emergencyServiceAddress.zip)
+                validator: validator.required(item && item.emergencyServiceAddress && item.emergencyServiceAddress.zip)
             },
             {
                 field: 'emergencyServiceAddress-customerName',
-                validator: this.validator.required(item && item.emergencyServiceAddress && item.emergencyServiceAddress.customerName)
+                validator: validator.required(item && item.emergencyServiceAddress && item.emergencyServiceAddress.customerName)
             },
-            {field: 'extension', validator: this.validator.required(this.extension.getId(item && item.extension))},
-            {field: 'model', validator: this.validator.required(this.deviceModel.getId(item && item.model))}
+            {field: 'extension', validator: validator.required(extension.extension.getId(item && item.extension))},
+            {field: 'model', validator: validator.required(deviceModel.deviceModel.getId(item && item.model))}
         ]);
 
     }
 
 }
+
+export var device = new Device();
 
 export interface IContactGroup extends helper.IHelperObject {
     notes?:string;

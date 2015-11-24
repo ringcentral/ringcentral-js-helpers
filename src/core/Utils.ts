@@ -9,284 +9,277 @@ var hasOwn = Object.prototype.hasOwnProperty,
     class2type["[object " + name + "]"] = name.toLowerCase();
 });
 
-export class Utils {
+/**
+ * Ported from jQuery.fn.extend
+ * Optional first parameter makes deep copy
+ */
+export function extend(targetObject:any, sourceObject:any, ...args) {
 
-    constructor() {}
+    var options, name, src, copy, copyIsArray, clone,
+        target = arguments[0] || {},
+        i = 1,
+        length = arguments.length,
+        deep = false;
 
-    /**
-     * Ported from jQuery.fn.extend
-     * Optional first parameter makes deep copy
-     */
-    extend(targetObject:any, sourceObject:any, ...args) {
+    // Handle a deep copy situation
+    if (typeof target === "boolean") {
+        deep = target;
 
-        var options, name, src, copy, copyIsArray, clone,
-            target = arguments[0] || {},
-            i = 1,
-            length = arguments.length,
-            deep = false;
+        // skip the boolean and the target
+        target = arguments[i] || {};
+        i++;
+    }
 
-        // Handle a deep copy situation
-        if (typeof target === "boolean") {
-            deep = target;
+    // Handle case when target is a string or something (possible in deep copy)
+    if (typeof target !== "object" && !isFunction(target)) {
+        target = {};
+    }
 
-            // skip the boolean and the target
-            target = arguments[i] || {};
-            i++;
-        }
+    for (; i < length; i++) {
 
-        // Handle case when target is a string or something (possible in deep copy)
-        if (typeof target !== "object" && !this.isFunction(target)) {
-            target = {};
-        }
+        // Only deal with non-null/undefined values
+        if ((options = arguments[i]) !== null) {
 
-        for (; i < length; i++) {
+            // Extend the base object
+            for (name in options) {
 
-            // Only deal with non-null/undefined values
-            if ((options = arguments[i]) !== null) {
+                src = target[name];
+                copy = options[name];
 
-                // Extend the base object
-                for (name in options) {
+                // Prevent never-ending loop
+                if (target === copy) {
+                    continue;
+                }
 
-                    src = target[name];
-                    copy = options[name];
+                // Recurse if we're merging plain objects or arrays
+                if (deep && copy && (isPlainObject(copy) || (copyIsArray = isArray(copy)))) {
 
-                    // Prevent never-ending loop
-                    if (target === copy) {
-                        continue;
+                    if (copyIsArray) {
+                        copyIsArray = false;
+                        clone = src && isArray(src) ? src : [];
+                    } else {
+                        clone = src && isPlainObject(src) ? src : {};
                     }
 
-                    // Recurse if we're merging plain objects or arrays
-                    if (deep && copy && (this.isPlainObject(copy) || (copyIsArray = this.isArray(copy)))) {
+                    // Never move original objects, clone them
+                    target[name] = extend(deep, clone, copy);
 
-                        if (copyIsArray) {
-                            copyIsArray = false;
-                            clone = src && this.isArray(src) ? src : [];
-                        } else {
-                            clone = src && this.isPlainObject(src) ? src : {};
-                        }
+                    // Don't bring in undefined values
+                } else if (copy !== undefined) {
 
-                        // Never move original objects, clone them
-                        target[name] = this.extend(deep, clone, copy);
+                    target[name] = copy;
 
-                        // Don't bring in undefined values
-                    } else if (copy !== undefined) {
-
-                        target[name] = copy;
-
-                    }
                 }
             }
         }
+    }
 
-        // Return the modified object
-        return target;
+    // Return the modified object
+    return target;
+
+}
+
+export function forEach(object, cb) {
+
+    for (var i in object) {
+
+        if (!object.hasOwnProperty(i)) continue;
+
+        var res = cb(object[i], i);
+
+        if (res === false) break;
 
     }
 
-    forEach(object, cb) {
+}
 
-        for (var i in object) {
+/**
+ * TODO Replace with something better
+ * @see https://github.com/joyent/node/blob/master/lib/querystring.js
+ * @param {object} parameters
+ * @returns {string}
+ */
+export function queryStringify(parameters) {
 
-            if (!object.hasOwnProperty(i)) continue;
+    var array = [];
 
-            var res = cb(object[i], i);
+    forEach(parameters, (v, i) => {
 
-            if (res === false) break;
-
-        }
-
-    }
-
-    /**
-     * TODO Replace with something better
-     * @see https://github.com/joyent/node/blob/master/lib/querystring.js
-     * @param {object} parameters
-     * @returns {string}
-     */
-    queryStringify(parameters) {
-
-        var array = [];
-
-        this.forEach(parameters, (v, i) => {
-
-            if (this.isArray(v)) {
-                v.forEach((vv) => {
-                    array.push(encodeURIComponent(i) + '=' + encodeURIComponent(vv));
-                });
-            } else {
-                array.push(encodeURIComponent(i) + '=' + encodeURIComponent(v));
-            }
-
-        });
-
-        return array.join('&');
-
-    }
-
-    /**
-     * TODO Replace with something better
-     * @see https://github.com/joyent/node/blob/master/lib/querystring.js
-     * @param {string} queryString
-     * @returns {object}
-     */
-    parseQueryString(queryString):any {
-
-        var argsParsed = {},
-            self = this;
-
-        queryString.split('&').forEach((arg) => {
-
-            arg = decodeURIComponent(arg);
-
-            if (arg.indexOf('=') == -1) {
-
-                argsParsed[arg.trim()] = true;
-
-            } else {
-
-                var pair = arg.split('='),
-                    key = pair[0].trim(),
-                    value = pair[1].trim();
-
-                if (key in argsParsed) {
-                    if (key in argsParsed && !self.isArray(argsParsed[key])) argsParsed[key] = [argsParsed[key]];
-                    argsParsed[key].push(value);
-                } else {
-                    argsParsed[key] = value;
-                }
-
-            }
-
-        });
-
-        return argsParsed;
-
-    }
-
-    /**
-     * Returns true if the passed value is valid email address.
-     * Checks multiple comma separated emails according to RFC 2822 if parameter `multiple` is `true`
-     */
-    isEmail(v:string, multiple:boolean):boolean {
-        if (!!multiple) {
-            //this Regexp is also suitable for multiple emails (comma separated)
-            return /^(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?[ ,;]*)+$/i.test(v);
+        if (isArray(v)) {
+            v.forEach((vv) => {
+                array.push(encodeURIComponent(i) + '=' + encodeURIComponent(vv));
+            });
         } else {
-            return /^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i.test(v);
+            array.push(encodeURIComponent(i) + '=' + encodeURIComponent(v));
         }
 
-    }
+    });
 
-    isPhoneNumber(v:string):boolean {
-        return (/\+?1[0-9]{3}[0-9a-z]{7}/im.test(v.toString().split(/[^0-9a-z\+]/im).join('')));
-    }
+    return array.join('&');
 
-    /**
-     * @param args
-     * @returns {Array}
-     */
-    argumentsToArray(args:any) {
-        return Array.prototype.slice.call(args || [], 0);
-    }
+}
 
-    isDate(obj:any):boolean {
-        return this.type(obj) === "date";
-    }
+/**
+ * TODO Replace with something better
+ * @see https://github.com/joyent/node/blob/master/lib/querystring.js
+ * @param {string} queryString
+ * @returns {object}
+ */
+export function parseQueryString(queryString):any {
 
-    isFunction(obj:any):boolean {
-        return this.type(obj) === "function";
-    }
+    var argsParsed = {};
 
-    isArray(obj:any):boolean {
-        return Array.isArray ? Array.isArray(obj) : this.type(obj) === "array";
-    }
+    queryString.split('&').forEach((arg) => {
 
-    // A crude way of determining if an object is a window
-    isWindow(obj:any):boolean {
-        return obj && typeof obj === "object" && "setInterval" in obj;
-    }
+        arg = decodeURIComponent(arg);
 
-    isNaN(obj:any):boolean {
-        return obj === null || !rdigit.test(obj) || isNaN(obj);
-    }
+        if (arg.indexOf('=') == -1) {
 
-    type(obj:any):string {
-        return obj === null
-            ? String(obj)
-            : class2type[toString.call(obj)] || "object";
-    }
+            argsParsed[arg.trim()] = true;
 
-    isPlainObject(obj:any):boolean {
+        } else {
 
-        // Must be an Object.
-        // Because of IE, we also have to check the presence of the constructor property.
-        // Make sure that DOM nodes and window objects don't pass through, as well
-        if (!obj || this.type(obj) !== "object" || obj.nodeType || this.isWindow(obj)) {
-            return false;
+            var pair = arg.split('='),
+                key = pair[0].trim(),
+                value = pair[1].trim();
+
+            if (key in argsParsed) {
+                if (key in argsParsed && !isArray(argsParsed[key])) argsParsed[key] = [argsParsed[key]];
+                argsParsed[key].push(value);
+            } else {
+                argsParsed[key] = value;
+            }
+
         }
 
-        // Not own constructor property must be Object
-        if (obj.constructor && !hasOwn.call(obj, "constructor") && !hasOwn.call(obj.constructor.prototype, "isPrototypeOf")) {
-            return false;
-        }
+    });
 
-        // Own properties are enumerated firstly, so to speed up,
-        // if last one is own, then all properties are own.
+    return argsParsed;
 
-        var key;
-        for (key in obj) {}
+}
 
-        return key === undefined || hasOwn.call(obj, key);
-
+/**
+ * Returns true if the passed value is valid email address.
+ * Checks multiple comma separated emails according to RFC 2822 if parameter `multiple` is `true`
+ */
+export function isEmail(v:string, multiple:boolean):boolean {
+    if (!!multiple) {
+        //this Regexp is also suitable for multiple emails (comma separated)
+        return /^(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?[ ,;]*)+$/i.test(v);
+    } else {
+        return /^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i.test(v);
     }
 
-    getProperty(obj:any, property:string):any {
+}
 
-        return property
-            .split(/[.[\]]/)
-            .reduce((res, part) => {
-                if (!res) return undefined;
-                return part ? res[part] : res;
-            }, obj);
+export function isPhoneNumber(v:string):boolean {
+    return (/\+?1[0-9]{3}[0-9a-z]{7}/im.test(v.toString().split(/[^0-9a-z\+]/im).join('')));
+}
 
+/**
+ * @param args
+ * @returns {Array}
+ */
+export function argumentsToArray(args:any) {
+    return Array.prototype.slice.call(args || [], 0);
+}
+
+export function isDate(obj:any):boolean {
+    return type(obj) === "date";
+}
+
+export function isFunction(obj:any):boolean {
+    return type(obj) === "function";
+}
+
+export function isArray(obj:any):boolean {
+    return Array.isArray ? Array.isArray(obj) : type(obj) === "array";
+}
+
+// A crude way of determining if an object is a window
+export function isWindow(obj:any):boolean {
+    return obj && typeof obj === "object" && "setInterval" in obj;
+}
+
+export function isNan(obj:any):boolean {
+    return obj === null || !rdigit.test(obj) || isNaN(obj);
+}
+
+export function type(obj:any):string {
+    return obj === null
+        ? String(obj)
+        : class2type[toString.call(obj)] || "object";
+}
+
+export function isPlainObject(obj:any):boolean {
+
+    // Must be an Object.
+    // Because of IE, we also have to check the presence of the constructor property.
+    // Make sure that DOM nodes and window objects don't pass through, as well
+    if (!obj || type(obj) !== "object" || obj.nodeType || isWindow(obj)) {
+        return false;
     }
 
-    poll(fn, interval?:number, timeout?:any):any { //NodeJS.Timer|number
-
-        this.stopPolling(timeout);
-
-        interval = interval || 1000;
-
-        var next = (delay?:number):any => {
-
-            delay = delay || interval;
-
-            interval = delay;
-
-            return setTimeout(() => {
-
-                fn(next, delay);
-
-            }, delay);
-
-        };
-
-        return next();
-
+    // Not own constructor property must be Object
+    if (obj.constructor && !hasOwn.call(obj, "constructor") && !hasOwn.call(obj.constructor.prototype, "isPrototypeOf")) {
+        return false;
     }
 
-    stopPolling(timeout) {
-        if (timeout) clearTimeout(timeout);
-    }
+    // Own properties are enumerated firstly, so to speed up,
+    // if last one is own, then all properties are own.
 
-    parseString(s:any):string {
-        return s ? s.toString() : '';
-    }
+    var key;
+    for (key in obj) {}
 
-    parseNumber(n:any):number {
-        if (!n) return 0;
-        n = parseFloat(n);
-        return isNaN(n) ? 0 : n;
-    }
+    return key === undefined || hasOwn.call(obj, key);
 
+}
+
+export function getProperty(obj:any, property:string):any {
+
+    return property
+        .split(/[.[\]]/)
+        .reduce((res, part) => {
+            if (!res) return undefined;
+            return part ? res[part] : res;
+        }, obj);
+
+}
+
+export function poll(fn, interval?:number, timeout?:any):any { //NodeJS.Timer|number
+
+    stopPolling(timeout);
+
+    interval = interval || 1000;
+
+    var next = (delay?:number):any => {
+
+        delay = delay || interval;
+
+        interval = delay;
+
+        return setTimeout(() => {
+
+            fn(next, delay);
+
+        }, delay);
+
+    };
+
+    return next();
+
+}
+
+export function stopPolling(timeout) {
+    if (timeout) clearTimeout(timeout);
+}
+
+export function parseString(s:any):string {
+    return s ? s.toString() : '';
+}
+
+export function parseNumber(n:any):number {
+    if (!n) return 0;
+    n = parseFloat(n);
+    return isNan(n) ? 0 : n;
 }

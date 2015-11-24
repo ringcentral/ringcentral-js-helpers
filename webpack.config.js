@@ -41,18 +41,14 @@ function createConfig(config) {
         },
 
         resolve: {
-            extensions: ['', '.ts', '.js', '.json'],
-            alias: {
-                'es6-promise': path.resolve('./bower_components/es6-promise-polyfill/promise.js'),
-                'pubnub': path.resolve('./bower_components/pubnub/web/pubnub.js') // smaller size than NPM version
-            }
+            extensions: ['', '.ts', '.js', '.json']
         },
 
         module: {
             loaders: [
                 {
                     test: /\.ts$/,
-                    loader: 'ts-loader?sourceMap&target=ES5' //TODO Use typescript-loader and tsconfig.json
+                    loader: 'ts-loader'
                 }
             ]
         },

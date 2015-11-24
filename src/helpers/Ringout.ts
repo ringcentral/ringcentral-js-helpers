@@ -1,8 +1,8 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
-import validator = require('../core/Validator');
-import call = require('./Call');
+import * as helper from '../core/Helper';
+import * as validator from '../core/Validator';
+import * as call from './Call';
 
 export class Ringout extends helper.Helper {
 
@@ -36,14 +36,16 @@ export class Ringout extends helper.Helper {
 
     validate(item:IRingout) {
 
-        return this.validator.validate([
-            {field: 'to', validator: this.validator.required(item && item.to && item.to.phoneNumber)},
-            {field: 'from', validator: this.validator.required(item && item.from && item.from.phoneNumber)}
+        return validator.validate([
+            {field: 'to', validator: validator.required(item && item.to && item.to.phoneNumber)},
+            {field: 'from', validator: validator.required(item && item.from && item.from.phoneNumber)}
         ]);
 
     }
 
 }
+
+export var ringout = new Ringout();
 
 export interface IRingout extends helper.IHelperObject {
     from?:call.ICallerInfo; // (!) ONLY PHONE NUMBER

@@ -1,24 +1,17 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
-import validator = require('../core/Validator');
-import list = require('../core/List');
-import utils = require('../core/Utils');
-import presence = require('./Presence');
-import contact = require('./Contact');
+import * as helper from '../core/Helper';
+import * as validator from '../core/Validator';
+import * as list from '../core/List';
+import * as utils from '../core/Utils';
+import * as presence from './Presence';
+import * as contact from './Contact';
 
 export class Call extends helper.Helper {
 
-    private presence:presence.Presence;
-    private contact:contact.Contact;
-
-    constructor(utils:utils.Utils, validator:validator.Validator, list:list.List, presence:presence.Presence, contact:contact.Contact) {
-
-        super(utils, validator, list);
-
-        this.contact = contact;
-        this.presence = presence;
-
+    constructor() {
+        super();
+        this.getSessionId = this.getSessionId.bind(this);
     }
 
     createUrl(options?:ICallOptions, id?:string) {
@@ -87,13 +80,13 @@ export class Call extends helper.Helper {
 
     filter(options?:ICallFilterOptions):(call:ICall)=>boolean {
 
-        options = this.utils.extend({
+        options = utils.extend({
             alive: true,
             direction: '',
             type: ''
         }, options);
 
-        return this.list.filter([
+        return list.filter([
             //{condition: options.alive, filterFn: this.isAlive},
             {filterBy: 'direction', condition: options.direction},
             {filterBy: 'type', condition: options.type}
@@ -103,7 +96,7 @@ export class Call extends helper.Helper {
 
     comparator(options?:list.IListComparatorOptions) {
 
-        return this.list.comparator(this.utils.extend({
+        return list.comparator(utils.extend({
             sortBy: 'startTime'
         }, options));
 
@@ -123,7 +116,7 @@ export class Call extends helper.Helper {
 
         }, []);
 
-        this.contact.attachToCallerInfos(callerInfos, contacts, options);
+        contact.contact.attachToCallerInfos(callerInfos, contacts, options);
 
     }
 
@@ -274,7 +267,7 @@ export class Call extends helper.Helper {
                 duration: 0,
                 type: '',
                 action: '',
-                result: this.presence.isCallInProgress(activeCall) ? 'In Progress' : activeCall.telephonyStatus,
+                result: presence.presence.isCallInProgress(activeCall) ? 'In Progress' : activeCall.telephonyStatus,
                 telephonyStatus: activeCall.telephonyStatus // non-standard property for compatibility
             };
 
@@ -325,6 +318,8 @@ export class Call extends helper.Helper {
     }
 
 }
+
+export var call = new Call();
 
 export interface ICall extends helper.IHelperObject {
     sessionId?:string;

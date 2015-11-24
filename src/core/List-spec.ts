@@ -1,61 +1,55 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var spy = mocha.sinon.spy;
-
-import list = require('./List');
-import utils = require('./Utils');
+import {expect, spy} from '../test/mocha';
+import * as list from './List';
 
 describe('RingCentralHelpers.List', function() {
 
     'use strict';
-
-    var List = new list.List(new utils.Utils());
 
     describe('stringComparator', function() {
 
         it('compares values as strings', function() {
 
             // numbers with different amount of digits
-            expect(List.stringComparator('12', '2')).to.equal(-1);
-            expect(List.stringComparator('2', '12')).to.equal(1);
+            expect(list.stringComparator('12', '2')).to.equal(-1);
+            expect(list.stringComparator('2', '12')).to.equal(1);
 
             // numbers with same amount of digits
-            expect(List.stringComparator('1', '2')).to.equal(-1);
-            expect(List.stringComparator('2', '1')).to.equal(1);
+            expect(list.stringComparator('1', '2')).to.equal(-1);
+            expect(list.stringComparator('2', '1')).to.equal(1);
 
             // same numbers
-            expect(List.stringComparator('1', '1')).to.equal(0);
+            expect(list.stringComparator('1', '1')).to.equal(0);
 
             // english strings
-            expect(List.stringComparator('a', 'b')).to.equal(-1);
-            expect(List.stringComparator('b', 'a')).to.equal(1);
-            expect(List.stringComparator('a', 'a')).to.equal(0);
+            expect(list.stringComparator('a', 'b')).to.equal(-1);
+            expect(list.stringComparator('b', 'a')).to.equal(1);
+            expect(list.stringComparator('a', 'a')).to.equal(0);
 
             // russian strings
-            expect(List.stringComparator('в', 'г')).to.equal(-1);
-            expect(List.stringComparator('г', 'в')).to.equal(1);
-            expect(List.stringComparator('г', 'г')).to.equal(0);
+            expect(list.stringComparator('в', 'г')).to.equal(-1);
+            expect(list.stringComparator('г', 'в')).to.equal(1);
+            expect(list.stringComparator('г', 'г')).to.equal(0);
 
         });
 
         it('compares values as numbers', function() {
 
             // numbers with different amount of digits as strings, <number> is used to convince TS
-            expect(List.numberComparator('12', '2')).to.equal(10);
-            expect(List.numberComparator('2', '12')).to.equal(-10);
+            expect(list.numberComparator('12', '2')).to.equal(10);
+            expect(list.numberComparator('2', '12')).to.equal(-10);
 
             // numbers with different amount of digits
-            expect(List.numberComparator(12, 2)).to.equal(10);
-            expect(List.numberComparator(2, 12)).to.equal(-10);
+            expect(list.numberComparator(12, 2)).to.equal(10);
+            expect(list.numberComparator(2, 12)).to.equal(-10);
 
             // numbers with same amount of digits
-            expect(List.numberComparator(1, 2)).to.equal(-1);
-            expect(List.numberComparator(2, 1)).to.equal(1);
+            expect(list.numberComparator(1, 2)).to.equal(-1);
+            expect(list.numberComparator(2, 1)).to.equal(1);
 
             // same numbers
-            expect(List.numberComparator(1, 1)).to.equal(0);
+            expect(list.numberComparator(1, 1)).to.equal(0);
 
         });
 
@@ -70,7 +64,7 @@ describe('RingCentralHelpers.List', function() {
                     {id: '2'},
                     {id: '1'}
                 ],
-                sortFn = List.comparator({sortBy: 'id'}),
+                sortFn = list.comparator({sortBy: 'id'}),
                 result = array
                     .map(function(item) {return item;}) // we need a copy, original array is sorted in-place
                     .sort(sortFn);
@@ -88,7 +82,7 @@ describe('RingCentralHelpers.List', function() {
                     {name: '2'},
                     {name: '1'}
                 ],
-                sortFn = List.comparator({sortBy: 'name'}),
+                sortFn = list.comparator({sortBy: 'name'}),
                 result = array
                     .map(function(item) {return item;}) // we need a copy, original array is sorted in-place
                     .sort(sortFn);
@@ -107,8 +101,8 @@ describe('RingCentralHelpers.List', function() {
                     {id: '2'},
                     {id: '1'}
                 ],
-                sortFn = List.comparator({
-                    compareFn: List.numberComparator,
+                sortFn = list.comparator({
+                    compareFn: list.numberComparator,
                     sortBy: 'id'
                 }),
                 result = array
@@ -135,7 +129,7 @@ describe('RingCentralHelpers.List', function() {
                         expect(opts.extractFn).to.equal(options.extractFn);
                         expect(opts.compareFn).to.equal(options.compareFn);
 
-                        return List.propertyExtractor('id')(item, opts);
+                        return list.propertyExtractor('id')(item, opts);
 
                     }),
                     compareFn: spy(function(a, b, opts) {
@@ -143,11 +137,11 @@ describe('RingCentralHelpers.List', function() {
                         expect(opts.extractFn).to.equal(options.extractFn);
                         expect(opts.compareFn).to.equal(options.compareFn);
 
-                        return List.numberComparator(a, b, opts);
+                        return list.numberComparator(a, b, opts);
 
                     })
                 },
-                sortFn = List.comparator(options),
+                sortFn = list.comparator(options),
                 result = array
                     .map(function(item) {return item;}) // we need a copy, original array is sorted in-place
                     .sort(sortFn);
@@ -167,10 +161,10 @@ describe('RingCentralHelpers.List', function() {
 
         it('returns a value of property', function() {
 
-            expect((<any>List.propertyExtractor('id'))({id: 'foo'})).to.equal('foo');
-            expect((<any>List.propertyExtractor('id'))(undefined)).to.equal(null);
-            expect((<any>List.propertyExtractor(null))('foo')).to.equal('foo');
-            expect((<any>List.propertyExtractor(null))({id: 'foo'})).to.deep.equal({id: 'foo'});
+            expect((<any>list.propertyExtractor('id'))({id: 'foo'})).to.equal('foo');
+            expect((<any>list.propertyExtractor('id'))(undefined)).to.equal(null);
+            expect((<any>list.propertyExtractor(null))('foo')).to.equal('foo');
+            expect((<any>list.propertyExtractor(null))({id: 'foo'})).to.deep.equal({id: 'foo'});
 
         });
 

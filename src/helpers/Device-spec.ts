@@ -1,26 +1,21 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var spy = mocha.sinon.spy;
-var sdk = mocha.sdk;
-var helpers = mocha.helpers;
+import {expect} from '../test/mocha';
+import {device} from './Device';
 
 describe('RingCentralHelpers.Device', function() {
 
     'use strict';
 
-    var Device = helpers.device();
-
     describe('createUrl', function() {
 
         it('returns URL depending on options', function() {
 
-            expect(Device.createUrl()).to.equal('/account/~/device');
-            expect(Device.createUrl({}, 'foo')).to.equal('/account/~/device/foo');
-            expect(Device.createUrl({extensionId: 'foo'})).to.equal('/account/~/extension/foo/device');
-            expect(Device.createUrl({extensionId: 'foo'}, 'bar')).to.equal('/account/~/extension/foo/device/bar');
-            expect(Device.createUrl({order: true}, 'bar')).to.equal('/account/~/order');
+            expect(device.createUrl()).to.equal('/account/~/device');
+            expect(device.createUrl({}, 'foo')).to.equal('/account/~/device/foo');
+            expect(device.createUrl({extensionId: 'foo'})).to.equal('/account/~/extension/foo/device');
+            expect(device.createUrl({extensionId: 'foo'}, 'bar')).to.equal('/account/~/extension/foo/device/bar');
+            expect(device.createUrl({order: true}, 'bar')).to.equal('/account/~/order');
 
         });
 
@@ -30,7 +25,7 @@ describe('RingCentralHelpers.Device', function() {
 
         it('performs basic validation', function() {
 
-            var res = Device.validate({});
+            var res = device.validate({});
 
             expect(res.isValid).to.equal(false);
             expect(res.errors['emergencyServiceAddress-street'][0]).to.be.instanceOf(Error);
@@ -46,7 +41,7 @@ describe('RingCentralHelpers.Device', function() {
 
         it('passes validation if values are correct', function() {
 
-            var res = Device.validate({
+            var res = device.validate({
                 emergencyServiceAddress: {
                     street: 'foo',
                     city: 'foo',

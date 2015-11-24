@@ -1,6 +1,6 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
+import * as helper from '../core/Helper';
 
 export class ShippingMethod extends helper.Helper {
 
@@ -12,6 +12,8 @@ export class ShippingMethod extends helper.Helper {
     }
 
 }
+
+export var shippingMethod = new ShippingMethod();
 
 export interface IShippingMethodOptions {
     quantity?:number;

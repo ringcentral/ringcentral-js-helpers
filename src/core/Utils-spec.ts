@@ -1,38 +1,33 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var sdk = mocha.sdk;
-
-import utils = require('./Utils');
+import {expect} from '../test/mocha';
+import * as utils from './Utils';
 
 describe('RCSDK.core.Utils', function() {
 
     'use strict';
 
-    var Utils = new utils.Utils();
-
     describe('parseQueryString & queryStringify', function() {
 
         it('parses queryStrings', function() {
 
-            expect(Utils.parseQueryString('foo=bar&bar=baz')).to.deep.equal({foo: 'bar', bar: 'baz'});
-            expect(Utils.parseQueryString('foo=bar&foo=baz')).to.deep.equal({foo: ['bar', 'baz']});
-            expect(Utils.parseQueryString('foo')).to.deep.equal({foo: true});
+            expect(utils.parseQueryString('foo=bar&bar=baz')).to.deep.equal({foo: 'bar', bar: 'baz'});
+            expect(utils.parseQueryString('foo=bar&foo=baz')).to.deep.equal({foo: ['bar', 'baz']});
+            expect(utils.parseQueryString('foo')).to.deep.equal({foo: true});
 
         });
 
         it('builds queryStrings', function() {
 
-            expect(Utils.queryStringify({foo: 'bar', bar: 'baz'})).to.equal('foo=bar&bar=baz');
-            expect(Utils.queryStringify({foo: ['bar', 'baz']})).to.equal('foo=bar&foo=baz');
+            expect(utils.queryStringify({foo: 'bar', bar: 'baz'})).to.equal('foo=bar&bar=baz');
+            expect(utils.queryStringify({foo: ['bar', 'baz']})).to.equal('foo=bar&foo=baz');
 
         });
 
         it('decodes pre-encoded string representation of object to be equal to original object', function() {
 
             function encodeDecode(v) {
-                return Utils.parseQueryString(Utils.queryStringify(v));
+                return utils.parseQueryString(utils.queryStringify(v));
             }
 
             var simple = {foo: 'bar'},
@@ -68,7 +63,7 @@ describe('RCSDK.core.Utils', function() {
                         id: 2
                     }
                 },
-                result = Utils.extend(target, source1, source2);
+                result = utils.extend(target, source1, source2);
 
             // make sure result is target
             expect(result).to.equal(target);
@@ -103,7 +98,7 @@ describe('RCSDK.core.Utils', function() {
                         id: 2
                     }
                 },
-                result = Utils.extend(true, target, source1, source2);
+                result = utils.extend(true, target, source1, source2);
 
             // make sure result is target
             expect(result).to.equal(target);
@@ -136,7 +131,7 @@ describe('RCSDK.core.Utils', function() {
                     'string': 'string'
                 };
 
-            Utils.extend(true, target, source);
+            utils.extend(true, target, source);
 
             // Deep equality
             expect(target).to.deep.equal(source);
@@ -155,7 +150,7 @@ describe('RCSDK.core.Utils', function() {
 
         it('allows to set custom delay', function(done) {
 
-            Utils.poll(function(next, delay) {
+            utils.poll(function(next, delay) {
 
                 expect(delay).to.equal(10);
                 done();
@@ -168,7 +163,7 @@ describe('RCSDK.core.Utils', function() {
 
             var i = 0;
 
-            Utils.poll(function(next) {
+            utils.poll(function(next) {
 
                 i++;
 
@@ -186,13 +181,13 @@ describe('RCSDK.core.Utils', function() {
 
         it('provides a method stop', function(done) {
 
-            var timeout = Utils.poll(function(next) {
+            var timeout = utils.poll(function(next) {
 
                 done(new Error('This should never be reached'));
 
             }, 10);
 
-            Utils.stopPolling(timeout);
+            utils.stopPolling(timeout);
 
             done();
 
@@ -200,13 +195,13 @@ describe('RCSDK.core.Utils', function() {
 
         it('cancels a previous timeout if provided', function(done) {
 
-            var timeout = Utils.poll(function(next) {
+            var timeout = utils.poll(function(next) {
 
                 done(new Error('This should never be reached'));
 
             }, 10);
 
-            var timeout2 = Utils.poll(function(next) {
+            var timeout2 = utils.poll(function(next) {
 
                 done();
 
@@ -220,14 +215,14 @@ describe('RCSDK.core.Utils', function() {
 
         it('extracts object itself as number if no options given', function() {
 
-            expect(Utils.parseNumber(1)).to.equal(1);
-            expect(Utils.parseNumber('1')).to.equal(1);
-            expect(Utils.parseNumber('0')).to.equal(0);
-            expect(Utils.parseNumber([])).to.equal(0);
-            expect(Utils.parseNumber([1])).to.equal(1);
-            expect(Utils.parseNumber([1, 1])).to.equal(1);
-            expect(Utils.parseNumber('not-a-number')).to.equal(0);
-            expect(Utils.parseNumber(null)).to.equal(0);
+            expect(utils.parseNumber(1)).to.equal(1);
+            expect(utils.parseNumber('1')).to.equal(1);
+            expect(utils.parseNumber('0')).to.equal(0);
+            expect(utils.parseNumber([])).to.equal(0);
+            expect(utils.parseNumber([1])).to.equal(1);
+            expect(utils.parseNumber([1, 1])).to.equal(1);
+            expect(utils.parseNumber('not-a-number')).to.equal(0);
+            expect(utils.parseNumber(null)).to.equal(0);
 
         });
 
@@ -237,12 +232,12 @@ describe('RCSDK.core.Utils', function() {
 
         it('extracts object itself as string if no options given', function() {
 
-            expect(Utils.parseString(1)).to.equal('1');
-            expect(Utils.parseString(0)).to.equal('');
-            expect(Utils.parseString([])).to.equal('');
-            expect(Utils.parseString([1, 2])).to.equal('1,2');
-            expect(Utils.parseString(null)).to.equal('');
-            expect(Utils.parseString({})).to.equal('[object Object]');
+            expect(utils.parseString(1)).to.equal('1');
+            expect(utils.parseString(0)).to.equal('');
+            expect(utils.parseString([])).to.equal('');
+            expect(utils.parseString([1, 2])).to.equal('1,2');
+            expect(utils.parseString(null)).to.equal('');
+            expect(utils.parseString({})).to.equal('[object Object]');
 
         });
 
@@ -254,7 +249,7 @@ describe('RCSDK.core.Utils', function() {
 
             it(description, function() {
 
-                expect(Utils.isEmail(valueToTest, multiple)).to.equal(expectedValidationResult);
+                expect(utils.isEmail(valueToTest, multiple)).to.equal(expectedValidationResult);
 
             });
 
@@ -288,7 +283,7 @@ describe('RCSDK.core.Utils', function() {
 
             it(description, function() {
 
-                expect(Utils.isPhoneNumber(valueToTest)).to.equal(expectedValidationResult);
+                expect(utils.isPhoneNumber(valueToTest)).to.equal(expectedValidationResult);
 
             });
 
@@ -318,26 +313,26 @@ describe('RCSDK.core.Utils', function() {
 
         describe('isDate', function() {
 
-            expect(Utils.isDate(new Date())).to.equal(true);
+            expect(utils.isDate(new Date())).to.equal(true);
 
         });
 
         describe('isFunction', function() {
 
-            expect(Utils.isFunction(Date)).to.equal(true);
-            expect(Utils.isFunction(function() {})).to.equal(true);
+            expect(utils.isFunction(Date)).to.equal(true);
+            expect(utils.isFunction(function() {})).to.equal(true);
 
         });
 
         describe('isArray', function() {
 
-            expect(Utils.isArray([])).to.equal(true);
+            expect(utils.isArray([])).to.equal(true);
 
         });
 
         describe('isNaN', function() {
 
-            expect(Utils.isNaN(NaN)).to.equal(true);
+            expect(utils.isNan(NaN)).to.equal(true);
 
         });
 
@@ -354,11 +349,11 @@ describe('RCSDK.core.Utils', function() {
                 arr: ['zero', 'one', 'two', {foo: 'bar'}]
             };
 
-            expect(Utils.getProperty(foo, 'bar.baz')).to.equal('qux');
-            expect(Utils.getProperty(foo, 'arr[0]')).to.equal('zero');
-            expect(Utils.getProperty(foo, 'arr[1]')).to.equal('one');
-            expect(Utils.getProperty(foo, 'arr[3].foo')).to.equal('bar');
-            expect(Utils.getProperty(foo, 'nonexistent')).to.equal(undefined);
+            expect(utils.getProperty(foo, 'bar.baz')).to.equal('qux');
+            expect(utils.getProperty(foo, 'arr[0]')).to.equal('zero');
+            expect(utils.getProperty(foo, 'arr[1]')).to.equal('one');
+            expect(utils.getProperty(foo, 'arr[3].foo')).to.equal('bar');
+            expect(utils.getProperty(foo, 'nonexistent')).to.equal(undefined);
 
         });
 

@@ -1,6 +1,7 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
+import * as helper from '../core/Helper';
+import * as validator from '../core/Validator';
 
 export class BlockedNumber extends helper.Helper {
 
@@ -17,15 +18,17 @@ export class BlockedNumber extends helper.Helper {
 
     validate(item:IBlockedNumber) {
 
-        return this.validator.validate([
-            {field: 'phoneNumber', validator: this.validator.phone(item.phoneNumber)},
-            {field: 'phoneNumber', validator: this.validator.required(item.phoneNumber)},
-            {field: 'name', validator: this.validator.required(item.name)}
+        return validator.validate([
+            {field: 'phoneNumber', validator: validator.phone(item.phoneNumber)},
+            {field: 'phoneNumber', validator: validator.required(item.phoneNumber)},
+            {field: 'name', validator: validator.required(item.name)}
         ]);
 
     }
 
 }
+
+export var blockedNumber = new BlockedNumber();
 
 export interface IBlockedNumber extends helper.IHelperObject {
     name:string;

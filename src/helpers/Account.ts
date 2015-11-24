@@ -1,6 +1,6 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
+import * as helper from '../core/Helper';
 
 export class Account extends helper.Helper {
 
@@ -9,3 +9,5 @@ export class Account extends helper.Helper {
     }
 
 }
+
+export var account = new Account();

@@ -1,8 +1,10 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
-import call = require('./Call');
-import list = require('../core/List');
+import * as helper from '../core/Helper';
+import * as call from './Call';
+import * as list from '../core/List';
+import * as utils from '../core/Utils';
+import * as validator from '../core/Validator';
 
 export class Contact extends helper.Helper {
 
@@ -72,7 +74,7 @@ export class Contact extends helper.Helper {
      */
     match(contact:IContact, string:string, options?:IContactMatchOptions):any {
 
-        options = this.utils.extend({
+        options = utils.extend({
             fields: [].concat(this.nameFields, this.emailFields, this.phoneFields, this.faxFields, this.otherFields),
             inAddresses: true,
             transformFn: (value, options) => {
@@ -128,7 +130,7 @@ export class Contact extends helper.Helper {
      */
     matchAsPhone(contact:IContact, phone:string, options?:IContactMatchOptions) {
 
-        return this.match(contact, phone, this.utils.extend({
+        return this.match(contact, phone, utils.extend({
             fields: [].concat(this.phoneFields, this.faxFields),
             inAddresses: false,
             transformFn: (value, options) => {
@@ -151,7 +153,7 @@ export class Contact extends helper.Helper {
                 return callerInfo.phoneNumber;
             }, true);
 
-        this.utils.forEach(callerInfoIndex, (indexedCallerInfos, phoneNumber) => {
+        utils.forEach(callerInfoIndex, (indexedCallerInfos, phoneNumber) => {
 
             var foundContact:IContact = null,
                 foundPhone = null;
@@ -181,7 +183,7 @@ export class Contact extends helper.Helper {
 
     comparator(options?:list.IListComparatorOptions) {
 
-        return this.list.comparator(this.utils.extend({
+        return list.comparator(utils.extend({
             extractFn: (contact:IContact, options) => {
                 return this.getFullName(contact);
             }
@@ -194,14 +196,14 @@ export class Contact extends helper.Helper {
      */
     filter(options?:IContactFilterOptions) {
 
-        options = this.utils.extend({
+        options = utils.extend({
             alive: true,
             startsWith: '',
             phonesOnly: false,
             faxesOnly: false
         }, options);
 
-        return this.list.filter([
+        return list.filter([
             {condition: options.alive, filterFn: this.isAlive},
             {condition: options.startsWith, filterFn: (item, opts) => { return this.match(item, opts.condition); }},
             {condition: options.phonesOnly, filterFn: (item, opts) => { return (this.getPhones(item).length > 0); }},
@@ -212,12 +214,12 @@ export class Contact extends helper.Helper {
 
     validate(item:IContact) {
 
-        return this.validator.validate([
-            {field: 'firstName', validator: this.validator.required(item.firstName)},
-            {field: 'lastName', validator: this.validator.required(item.lastName)},
-            {field: 'email', validator: this.validator.email(item.email)},
-            {field: 'email2', validator: this.validator.email(item.email2)},
-            {field: 'email3', validator: this.validator.email(item.email3)}
+        return validator.validate([
+            {field: 'firstName', validator: validator.required(item.firstName)},
+            {field: 'lastName', validator: validator.required(item.lastName)},
+            {field: 'email', validator: validator.email(item.email)},
+            {field: 'email2', validator: validator.email(item.email2)},
+            {field: 'email3', validator: validator.email(item.email3)}
         ]);
 
     }
@@ -275,6 +277,8 @@ export class Contact extends helper.Helper {
 
 
 }
+
+export var contact = new Contact();
 
 export interface IContactOptions {
     extensionId?:string;

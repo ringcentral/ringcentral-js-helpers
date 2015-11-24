@@ -1,24 +1,13 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var spy = mocha.sinon.spy;
-var sdk = mocha.sdk;
-var helpers = mocha.helpers;
-
-import helper = require('./Helper');
-import validator = require('./Validator');
-import list = require('./List');
-import utils = require('./Utils');
+import {expect, spy} from '../test/mocha';
+import * as helper from './Helper';
 
 describe('RingCentralHelpers.Helper', function() {
 
     'use strict';
 
-    var Utils = new utils.Utils(),
-        List = new list.List(Utils),
-        Validator = new validator.Validator(Utils),
-        Helper = new helper.Helper(Utils, Validator, List),
+    var Helper = new helper.Helper(),
         defaultUrl = 'default',
         defaultSyncUrl = 'default-sync';
 

@@ -1,22 +1,17 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var spy = mocha.sinon.spy;
-var sdk = mocha.sdk;
-var helpers = mocha.helpers;
+import {expect} from '../test/mocha';
+import {contact} from './Contact';
 
 describe('RingCentralHelpers.Contact', function() {
 
     'use strict';
 
-    var Contact = helpers.contact();
-
     describe('match & matchAsPhone', function() {
 
         it('matches a string against a contact', function() {
 
-            var contact = <any>{
+            var contactInfo = <any>{
                 firstName: 'firstName',
                 lastName: 'lastName',
                 company: 'lastName',
@@ -60,15 +55,15 @@ describe('RingCentralHelpers.Contact', function() {
                 }
             };
 
-            expect(Contact.match(contact, 'firstName')).to.equal(contact.firstName);
-            expect(Contact.match(contact, 'lastName')).to.equal(contact.lastName);
+            expect(contact.match(contactInfo, 'firstName')).to.equal(contactInfo.firstName);
+            expect(contact.match(contactInfo, 'lastName')).to.equal(contactInfo.lastName);
 
-            expect(Contact.matchAsPhone(contact, 'homePhone')).to.equal(contact.homePhone);
-            expect(Contact.matchAsPhone(contact, 'businessAddress-street')).to.equal(null);
+            expect(contact.matchAsPhone(contactInfo, 'homePhone')).to.equal(contactInfo.homePhone);
+            expect(contact.matchAsPhone(contactInfo, 'businessAddress-street')).to.equal(null);
 
             // search in address
-            expect(Contact.match(contact, 'businessAddress-street')).to.equal(contact.businessAddress.street);
-            expect(Contact.match(contact, 'businessAddress-street', {inAddresses: false})).to.equal(null);
+            expect(contact.match(contactInfo, 'businessAddress-street')).to.equal(contactInfo.businessAddress.street);
+            expect(contact.match(contactInfo, 'businessAddress-street', {inAddresses: false})).to.equal(null);
 
         });
 
@@ -89,7 +84,7 @@ describe('RingCentralHelpers.Contact', function() {
                     {phoneNumber: 'notfound'}
                 ];
 
-            Contact.attachToCallerInfos(callerInfos, contacts);
+            contact.attachToCallerInfos(callerInfos, contacts);
 
             expect(callerInfos[0].contact).to.equal(contacts[2]);
             expect(callerInfos[0].contactPhone).to.equal(contacts[2].homePhone);
@@ -119,7 +114,7 @@ describe('RingCentralHelpers.Contact', function() {
 
         it('rules out dead objects by default', function() {
 
-            var filtered = contacts.filter(Contact.filter());
+            var filtered = contacts.filter(contact.filter());
 
             expect(filtered.length).to.equal(3);
             expect(filtered[0]).to.equal(contacts[1]);
@@ -130,7 +125,7 @@ describe('RingCentralHelpers.Contact', function() {
 
         it('rules out by search phrase', function() {
 
-            var filtered = contacts.filter(Contact.filter({startsWith: 'foo'}));
+            var filtered = contacts.filter(contact.filter({startsWith: 'foo'}));
 
             expect(filtered.length).to.equal(3);
             expect(filtered[0]).to.equal(contacts[1]);
@@ -141,7 +136,7 @@ describe('RingCentralHelpers.Contact', function() {
 
         it('rules out by items with no phones', function() {
 
-            var filtered = contacts.filter(Contact.filter({phonesOnly: true}));
+            var filtered = contacts.filter(contact.filter({phonesOnly: true}));
 
             expect(filtered.length).to.equal(1);
             expect(filtered[0]).to.equal(contacts[3]);
@@ -150,7 +145,7 @@ describe('RingCentralHelpers.Contact', function() {
 
         it('rules out by items with no faxes', function() {
 
-            var filtered = contacts.filter(Contact.filter({faxesOnly: true}));
+            var filtered = contacts.filter(contact.filter({faxesOnly: true}));
 
             expect(filtered.length).to.equal(1);
             expect(filtered[0]).to.equal(contacts[2]);
@@ -169,7 +164,7 @@ describe('RingCentralHelpers.Contact', function() {
 
         it('sorts objects by "full name"', function() {
 
-            var sorted = [].concat(contacts).sort(Contact.comparator());
+            var sorted = [].concat(contacts).sort(contact.comparator());
 
             expect(sorted[0]).to.equal(contacts[2]);
             expect(sorted[1]).to.equal(contacts[0]);
@@ -183,7 +178,7 @@ describe('RingCentralHelpers.Contact', function() {
 
         it('performs basic validation', function() {
 
-            var res = Contact.validate({});
+            var res = contact.validate({});
 
             expect(res.isValid).to.equal(false);
             expect(res.errors['firstName'][0]).to.be.instanceOf(Error);
@@ -196,7 +191,7 @@ describe('RingCentralHelpers.Contact', function() {
 
         it('performs complex validation', function() {
 
-            var res = Contact.validate({email: 'foo', email2: 'bar', email3: 'baz'});
+            var res = contact.validate({email: 'foo', email2: 'bar', email3: 'baz'});
 
             expect(res.isValid).to.equal(false);
             expect(res.errors['firstName'][0]).to.be.instanceOf(Error);
@@ -209,7 +204,7 @@ describe('RingCentralHelpers.Contact', function() {
 
         it('passes validation if values are correct', function() {
 
-            var res = Contact.validate({
+            var res = contact.validate({
                 email: 'foo@bar.baz',
                 email2: 'foo@bar.baz',
                 email3: 'foo@bar.baz',
@@ -224,7 +219,7 @@ describe('RingCentralHelpers.Contact', function() {
 
         it('passes validation if values are correct', function() {
 
-            var res = Contact.validate({
+            var res = contact.validate({
                 firstName: 'foo',
                 lastName: 'bar'
             });

@@ -1,22 +1,12 @@
 /// <reference path="../externals.d.ts" />
 
-import validator = require('../core/Validator');
-import list = require('../core/List');
-import utils = require('../core/Utils');
-import helper = require('../core/Helper');
-import extension = require('./Extension');
+import * as validator from '../core/Validator';
+import * as list from '../core/List';
+import * as utils from '../core/Utils';
+import * as helper from '../core/Helper';
+import * as extension from './Extension';
 
 export class Presence extends helper.Helper {
-
-    private extension:extension.Extension;
-
-    constructor(utils:utils.Utils, validator:validator.Validator, list:list.List, extension:extension.Extension) {
-
-        super(utils, validator, list);
-
-        this.extension = extension;
-
-    }
 
     createUrl(options?:IPresenceOptions, id?:string) {
 
@@ -27,7 +17,7 @@ export class Presence extends helper.Helper {
     }
 
     getId(presence:IPresence) {
-        return presence && (this.extension.getId(presence.extension) || presence.extensionId);
+        return presence && (extension.extension.getId(presence.extension) || presence.extensionId);
     }
 
     isAvailable(presence:IPresence) {
@@ -60,11 +50,11 @@ export class Presence extends helper.Helper {
 
         extensions.forEach((ex:extension.IExtension) => {
 
-            var presence = index[this.extension.getId(ex)];
+            var presence = index[extension.extension.getId(ex)];
 
             if (presence) {
                 if ('presence' in ex && merge) {
-                    this.utils.extend(ex.presence, presence);
+                    utils.extend(ex.presence, presence);
                 } else {
                     ex.presence = presence;
                 }
@@ -82,6 +72,8 @@ export class Presence extends helper.Helper {
 
 
 }
+
+export var presence = new Presence();
 
 export interface IPresence extends helper.IHelperObject {
     extension?:extension.IExtension;

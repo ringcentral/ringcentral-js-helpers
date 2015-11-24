@@ -1,6 +1,6 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
+import * as helper from '../core/Helper';
 
 export class Language extends helper.Helper {
 
@@ -11,6 +11,8 @@ export class Language extends helper.Helper {
     }
 
 }
+
+export var language = new Language();
 
 export interface ILanguage extends helper.IHelperObject {
     name?:string;

@@ -1,15 +1,9 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var spy = mocha.sinon.spy;
-
-import validator = require('./Validator');
-import utils = require('./Utils');
+import {expect} from '../test/mocha';
+import * as validator from './Validator';
 
 describe('RingCentralHelpers.Validator', function() {
-
-    var Validator = new validator.Validator(new utils.Utils());
 
     describe('length', function() {
 
@@ -17,7 +11,7 @@ describe('RingCentralHelpers.Validator', function() {
 
             it(description, function() {
 
-                var result = Validator.validate([{field: 'foo', validator: Validator.length(valueToTest, max, min)}]);
+                var result = validator.validate([{field: 'foo', validator: validator.length(valueToTest, max, min)}]);
                 expect(result.isValid).to.equal(expectedValidationResult);
 
             });

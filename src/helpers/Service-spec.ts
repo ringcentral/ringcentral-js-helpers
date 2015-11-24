@@ -1,10 +1,7 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var spy = mocha.sinon.spy;
-var sdk = mocha.sdk;
-var helpers = mocha.helpers;
+import {expect} from '../test/mocha';
+import {service} from './Service';
 
 describe('RingCentralHelpers.Service', function() {
 
@@ -36,8 +33,7 @@ describe('RingCentralHelpers.Service', function() {
                         {"featureName": "HipaaCompliance", "enabled": value},
                         {"featureName": "CallPark", "enabled": value},
                         {"featureName": "OnDemandCallRecording", "enabled": value}
-                    ],
-                    service = helpers.service();
+                    ];
 
                 expect(service.isSmsEnabled(features)).to.equal(value);
                 expect(service.isSmsReceivingEnabled(features)).to.equal(value);

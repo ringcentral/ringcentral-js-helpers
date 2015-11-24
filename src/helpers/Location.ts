@@ -1,22 +1,12 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
-import list = require('../core/List');
-import utils = require('../core/Utils');
-import validator = require('../core/Validator');
-import state = require('./State');
+import * as helper from '../core/Helper';
+import * as list from '../core/List';
+import * as utils from '../core/Utils';
+import * as validator from '../core/Validator';
+import * as state from './State';
 
 export class Location extends helper.Helper {
-
-    private state:state.State;
-
-    constructor(utils:utils.Utils, validator:validator.Validator, list:list.List, state:state.State) {
-
-        super(utils, validator, list);
-
-        this.state = state;
-
-    }
 
     createUrl() {
         return '/dictionary/location';
@@ -26,16 +16,16 @@ export class Location extends helper.Helper {
 
         var uniqueNPAs = [];
 
-        options = this.utils.extend({
+        options = utils.extend({
             stateId: '',
             onlyUniqueNPA: false
         }, options);
 
-        return this.list.filter([
+        return list.filter([
             {
                 condition: options.stateId,
                 filterFn: (item:ILocation, opts) => {
-                    return (this.state.getId(item.state) == opts.condition);
+                    return (state.state.getId(item.state) == opts.condition);
                 }
             },
             {
@@ -55,7 +45,7 @@ export class Location extends helper.Helper {
 
     comparator(options?:list.IListComparatorOptions) {
 
-        options = this.utils.extend({
+        options = utils.extend({
             sortBy: 'npa'
         }, options);
 
@@ -65,15 +55,17 @@ export class Location extends helper.Helper {
                 return (parseInt(item.npa) * 1000000) + parseInt(item.nxx);
             };
 
-            options.compareFn = this.list.numberComparator;
+            options.compareFn = list.numberComparator;
 
         }
 
-        return this.list.comparator(options);
+        return list.comparator(options);
 
     }
 
 }
+
+export var location = new Location();
 
 export interface ILocation extends helper.IHelperObject {
     name?:string;

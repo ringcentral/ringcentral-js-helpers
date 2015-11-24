@@ -1,14 +1,15 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
-import list = require('../core/List');
-import validator = require('../core/Validator');
-import contact = require('./Contact');
-import service = require('./Service');
-import country = require('./Country');
-import timezone = require('./Timezone');
-import language = require('./Language');
-import presence = require('./Presence');
+import * as helper from '../core/Helper';
+import * as list from '../core/List';
+import * as utils from '../core/Utils';
+import * as validator from '../core/Validator';
+import * as contact from './Contact';
+import * as service from './Service';
+import * as country from './Country';
+import * as timezone from './Timezone';
+import * as language from './Language';
+import * as presence from './Presence';
 
 export class Extension extends helper.Helper {
 
@@ -47,25 +48,25 @@ export class Extension extends helper.Helper {
 
     comparator(options?:list.IListComparatorOptions) {
 
-        return this.list.comparator(this.utils.extend({
+        return list.comparator(utils.extend({
             sortBy: 'extensionNumber',
-            compareFn: this.list.numberComparator
+            compareFn: list.numberComparator
         }, options));
 
     }
 
     filter(options?:IExtensionFilterOptions) {
 
-        options = this.utils.extend({
+        options = utils.extend({
             search: '',
             type: ''
         }, options);
 
-        return this.list.filter([
+        return list.filter([
             {filterBy: 'type', condition: options.type},
             {
                 condition: options.search.toLocaleLowerCase(),
-                filterFn: this.list.containsFilter,
+                filterFn: list.containsFilter,
                 extractFn: (item) => {
                     return (item.name && (item.name.toLocaleLowerCase() + ' ')) +
                            (item.extensionNumber && item.extensionNumber.toString().toLocaleLowerCase());
@@ -76,6 +77,8 @@ export class Extension extends helper.Helper {
     }
 
 }
+
+export var extension = new Extension();
 
 export interface IExtensionOptions {
     departmentId?:string;

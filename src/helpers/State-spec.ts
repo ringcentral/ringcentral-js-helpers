@@ -1,16 +1,11 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var spy = mocha.sinon.spy;
-var sdk = mocha.sdk;
-var helpers = mocha.helpers;
+import {expect} from '../test/mocha';
+import {state} from './State';
 
 describe('RingCentralHelpers.dictionaries.State', function() {
 
     'use strict';
-
-    var State = helpers.state();
 
     var states = [
         {id: 1, country: {id: '1'}},
@@ -23,7 +18,7 @@ describe('RingCentralHelpers.dictionaries.State', function() {
 
         it('filters by countryId', function() {
 
-            var filtered = states.filter(State.filter({countryId: '2'}));
+            var filtered = states.filter(state.filter({countryId: '2'}));
 
             expect(filtered.length).to.equal(2);
             expect(filtered[0]).to.equal(states[1]);
@@ -37,7 +32,7 @@ describe('RingCentralHelpers.dictionaries.State', function() {
 
         it('returns URL depending on options', function() {
 
-            expect(State.createUrl()).to.equal('/dictionary/state');
+            expect(state.createUrl()).to.equal('/dictionary/state');
 
         });
 

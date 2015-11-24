@@ -1,8 +1,9 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
-import list = require('../core/List');
-import extension = require('./Extension');
+import * as helper from '../core/Helper';
+import * as list from '../core/List';
+import * as utils from '../core/Utils';
+import * as extension from './Extension';
 
 export class PhoneNumber extends helper.Helper {
 
@@ -39,7 +40,7 @@ export class PhoneNumber extends helper.Helper {
 
     comparator(options?:list.IListComparatorOptions) {
 
-        return this.list.comparator(this.utils.extend({
+        return list.comparator(utils.extend({
             extractFn: (item:IPhoneNumber) => {
                 return item.usageType + '-' +
                        item.paymentType + '-' +
@@ -54,14 +55,14 @@ export class PhoneNumber extends helper.Helper {
      */
     filter(options?:IPhoneNumberFilterOptions) {
 
-        options = this.utils.extend({
+        options = utils.extend({
             usageType: '',
             paymentType: '',
             type: '',
             features: []
         }, options);
 
-        return this.list.filter([
+        return list.filter([
             {filterBy: 'usageType', condition: options.usageType},
             {filterBy: 'paymentType', condition: options.paymentType},
             {filterBy: 'type', condition: options.type},
@@ -80,6 +81,8 @@ export class PhoneNumber extends helper.Helper {
     }
 
 }
+
+export var phoneNumber = new PhoneNumber();
 
 export interface IPhoneNumber extends helper.IHelperObject {
     phoneNumber?:string;

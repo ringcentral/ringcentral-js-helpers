@@ -5,7 +5,10 @@ export import sinon = require("sinon");
 export import sinonChai = require('sinon-chai');
 export import mocha = require('mocha');
 
-export import helpers = require('../SDK');
+export var expect = chai.expect;
+export var spy = sinon.spy;
+
+chai.use(sinonChai);
 
 declare var require:(name:string)=>any;
 
@@ -20,14 +23,18 @@ SDK.core.Queue._pollInterval = 1;
 SDK.core.Queue._releaseTimeout = 50;
 SDK.subscription.Subscription._pollInterval = 1;
 
-export var sdk = new SDK({
-    server: 'http://whatever',
-    appKey: 'whatever',
-    appSecret: 'whatever',
-    client: client,
-    pubnubFactory: pubnub
-});
+export function getSDK() {
 
-sdk.platform().auth().forceAuthentication();
+    var sdk = new SDK({
+        server: 'http://whatever',
+        appKey: 'whatever',
+        appSecret: 'whatever',
+        client: client,
+        pubnubFactory: pubnub
+    });
 
-chai.use(sinonChai);
+    sdk.platform().auth().forceAuthentication();
+
+    return sdk;
+
+}

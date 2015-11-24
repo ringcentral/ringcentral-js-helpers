@@ -1,87 +1,76 @@
 /// <reference path="../externals.d.ts" />
 
-import utils = require('./Utils');
+import * as utils from './Utils';
 
-export class Validator {
+export function validate(validators:IValidator[]):IValidatorResult {
 
-    private utils:utils.Utils;
+    var result = <IValidatorResult>{
+        errors: {},
+        isValid: true
+    };
 
-    constructor(utils:utils.Utils) {
-        this.utils = utils;
-    }
+    result.errors = <any>validators.reduce((errors, validator) => {
 
-    validate(validators:IValidator[]):IValidatorResult {
+        var res = validator.validator();
 
-        var result = <IValidatorResult>{
-            errors: {},
-            isValid: true
-        };
+        if (res.length > 0) {
+            result.isValid = false;
+            errors[validator.field] = errors[validator.field] || [];
+            errors[validator.field] = errors[validator.field].concat(res);
+        }
 
-        result.errors = <any>validators.reduce((errors, validator) => {
+        return errors;
 
-            var res = validator.validator();
+    }, {});
 
-            if (res.length > 0) {
-                result.isValid = false;
-                errors[validator.field] = errors[validator.field] || [];
-                errors[validator.field] = errors[validator.field].concat(res);
-            }
+    return result;
 
-            return errors;
+}
 
-        }, {});
+/**
+ * It is not recommended to have any kinds of complex validators at front end
+ * @deprecated
+ */
+export function email(value:string, multiple?:boolean) {
+    return ():Error[] => {
+        if (!value) return [];
+        return utils.isEmail(value, multiple) ? [] : [new Error('Value has to be a valid email')];
+    };
+}
 
-        return result;
+/**
+ * It is not recommended to have any kinds of complex validators at front end
+ * TODO International phone numbers
+ * @deprecated
+ */
+export function phone(value:string) {
+    return ():Error[] => {
+        if (!value) return [];
+        return utils.isPhoneNumber(value) ? [] : [new Error('Value has to be a valid US phone number')];
+    };
+}
 
-    }
+export function required(value:any) {
+    return ():Error[] => {
+        return !value ? [new Error('Field is required')] : [];
+    };
+}
 
-    /**
-     * It is not recommended to have any kinds of complex validators at front end
-     * @deprecated
-     */
-    email(value:string, multiple?:boolean) {
-        return ():Error[] => {
-            if (!value) return [];
-            return this.utils.isEmail(value, multiple) ? [] : [new Error('Value has to be a valid email')];
-        };
-    }
+export function length(value:string, max?:number, min?:number) {
+    return ():Error[] => {
 
-    /**
-     * It is not recommended to have any kinds of complex validators at front end
-     * TODO International phone numbers
-     * @deprecated
-     */
-    phone(value:string) {
-        return ():Error[] => {
-            if (!value) return [];
-            return this.utils.isPhoneNumber(value) ? [] : [new Error('Value has to be a valid US phone number')];
-        };
-    }
+        var errors = [];
 
-    required(value:any) {
-        return ():Error[] => {
-            return !value ? [new Error('Field is required')] : [];
-        };
-    }
+        if (!value) return errors;
 
-    length(value:string, max?:number, min?:number) {
-        return ():Error[] => {
+        value = value.toString();
 
-            var errors = [];
+        if (min && value.length < min) errors.push(new Error('Minimum length of ' + min + ' characters is required'));
+        if (max && value.length > max) errors.push(new Error('Maximum length of ' + max + ' characters is required'));
 
-            if (!value) return errors;
+        return errors;
 
-            value = value.toString();
-
-            if (min && value.length < min) errors.push(new Error('Minimum length of ' + min + ' characters is required'));
-            if (max && value.length > max) errors.push(new Error('Maximum length of ' + max + ' characters is required'));
-
-            return errors;
-
-        };
-    }
-
-
+    };
 }
 
 export interface IValidator {

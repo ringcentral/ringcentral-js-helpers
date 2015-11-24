@@ -1,23 +1,13 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
-import list = require('../core/List');
-import utils = require('../core/Utils');
-import validator = require('../core/Validator');
-import contact = require('./Contact');
-import call = require('./Call');
+import * as helper from '../core/Helper';
+import * as list from '../core/List';
+import * as utils from '../core/Utils';
+import * as validator from '../core/Validator';
+import * as contact from './Contact';
+import * as call from './Call';
 
 export class Message extends helper.Helper {
-
-    private contact:contact.Contact;
-
-    constructor(utils:utils.Utils, validator:validator.Validator, list:list.List, contact:contact.Contact) {
-
-        super(utils, validator, list);
-
-        this.contact = contact;
-
-    }
 
     /**
      *
@@ -105,7 +95,7 @@ export class Message extends helper.Helper {
      */
     comparator(options?:list.IListComparatorOptions) {
 
-        return this.list.comparator(this.utils.extend({
+        return list.comparator(utils.extend({
             sortBy: 'creationTime'
         }, options));
 
@@ -113,7 +103,7 @@ export class Message extends helper.Helper {
 
     filter(options?:IMessageFilterOptions) {
 
-        options = this.utils.extend({
+        options = utils.extend({
             search: '',
             alive: true,
             direction: '',
@@ -121,13 +111,13 @@ export class Message extends helper.Helper {
             readStatus: ''
         }, options);
 
-        return this.list.filter([
+        return list.filter([
             {condition: options.alive, filterFn: this.isAlive},
             {filterBy: 'type', condition: options.type},
             {filterBy: 'direction', condition: options.direction},
             {filterBy: 'conversationId', condition: options.conversationId},
             {filterBy: 'readStatus', condition: options.readStatus},
-            {filterBy: 'subject', condition: options.search, filterFn: this.list.containsFilter}
+            {filterBy: 'subject', condition: options.search, filterFn: list.containsFilter}
         ]);
 
     }
@@ -147,7 +137,7 @@ export class Message extends helper.Helper {
 
         }, []);
 
-        this.contact.attachToCallerInfos(callerInfos, contacts, options);
+        contact.contact.attachToCallerInfos(callerInfos, contacts, options);
 
     }
 
@@ -163,27 +153,29 @@ export class Message extends helper.Helper {
 
     validateSMS(item:IMessage) {
 
-        return this.validator.validate([
-            {field: 'to', validator: this.validator.required(this.utils.getProperty(item, 'to[0].phoneNumber'))},
-            {field: 'from', validator: this.validator.required(this.utils.getProperty(item, 'from.phoneNumber'))},
-            {field: 'subject', validator: this.validator.required(this.utils.getProperty(item, 'subject'))},
-            {field: 'subject', validator: this.validator.length(this.utils.getProperty(item, 'subject'), 160)}
+        return validator.validate([
+            {field: 'to', validator: validator.required(utils.getProperty(item, 'to[0].phoneNumber'))},
+            {field: 'from', validator: validator.required(utils.getProperty(item, 'from.phoneNumber'))},
+            {field: 'subject', validator: validator.required(utils.getProperty(item, 'subject'))},
+            {field: 'subject', validator: validator.length(utils.getProperty(item, 'subject'), 160)}
         ]);
 
     }
 
     validatePager(item:IMessage) {
 
-        return this.validator.validate([
-            {field: 'to', validator: this.validator.required(this.utils.getProperty(item, 'to.extensionNumber'))},
-            {field: 'from', validator: this.validator.required(this.utils.getProperty(item, 'from.extensionNumber'))},
-            {field: 'subject', validator: this.validator.required(this.utils.getProperty(item, 'subject'))},
-            {field: 'subject', validator: this.validator.length(this.utils.getProperty(item, 'subject'), 160)}
+        return validator.validate([
+            {field: 'to', validator: validator.required(utils.getProperty(item, 'to.extensionNumber'))},
+            {field: 'from', validator: validator.required(utils.getProperty(item, 'from.extensionNumber'))},
+            {field: 'subject', validator: validator.required(utils.getProperty(item, 'subject'))},
+            {field: 'subject', validator: validator.length(utils.getProperty(item, 'subject'), 160)}
         ]);
 
     }
 
 }
+
+export var message = new Message();
 
 export interface IMessage extends helper.IHelperObject {
     to?:call.ICallerInfo[];

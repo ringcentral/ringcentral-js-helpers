@@ -1,25 +1,20 @@
 /// <reference path="../externals.d.ts" />
 
-export import mocha = require('../test/mocha');
-var expect = mocha.chai.expect;
-var spy = mocha.sinon.spy;
-var sdk = mocha.sdk;
-var helpers = mocha.helpers;
+import {expect} from '../test/mocha';
+import {ringout} from './Ringout';
 
 describe('RingCentralHelpers.Ringout', function() {
 
     'use strict';
 
-    var Ringout = helpers.ringout();
-
     describe('createUrl', function() {
 
         it('returns URL depending on options', function() {
 
-            expect(Ringout.createUrl()).to.equal('/account/~/extension/~/ringout');
-            expect(Ringout.createUrl({}, 'foo')).to.equal('/account/~/extension/~/ringout/foo');
-            expect(Ringout.createUrl({extensionId: 'foo'})).to.equal('/account/~/extension/foo/ringout');
-            expect(Ringout.createUrl({extensionId: 'foo'}, 'bar')).to.equal('/account/~/extension/foo/ringout/bar');
+            expect(ringout.createUrl()).to.equal('/account/~/extension/~/ringout');
+            expect(ringout.createUrl({}, 'foo')).to.equal('/account/~/extension/~/ringout/foo');
+            expect(ringout.createUrl({extensionId: 'foo'})).to.equal('/account/~/extension/foo/ringout');
+            expect(ringout.createUrl({extensionId: 'foo'}, 'bar')).to.equal('/account/~/extension/foo/ringout/bar');
 
         });
 
@@ -29,25 +24,25 @@ describe('RingCentralHelpers.Ringout', function() {
 
         it('unsaved ringout is not inProgress/error/success', function() {
 
-            expect(Ringout.isSuccess({status: {callStatus: 'InProgress'}})).to.equal(false);
-            expect(Ringout.isError({status: {callStatus: 'Error'}})).to.equal(false);
-            expect(Ringout.isInProgress({status: {callStatus: 'Success'}})).to.equal(false);
+            expect(ringout.isSuccess({status: {callStatus: 'InProgress'}})).to.equal(false);
+            expect(ringout.isError({status: {callStatus: 'Error'}})).to.equal(false);
+            expect(ringout.isInProgress({status: {callStatus: 'Success'}})).to.equal(false);
 
         });
 
         it('provides interfaces to determine statuses', function() {
 
-            expect(Ringout.isSuccess({id: 'foo', uri: 'bar', status: {callStatus: 'InProgress'}})).to.equal(false);
-            expect(Ringout.isError({id: 'foo', uri: 'bar', status: {callStatus: 'InProgress'}})).to.equal(false);
-            expect(Ringout.isInProgress({id: 'foo', uri: 'bar', status: {callStatus: 'InProgress'}})).to.equal(true);
+            expect(ringout.isSuccess({id: 'foo', uri: 'bar', status: {callStatus: 'InProgress'}})).to.equal(false);
+            expect(ringout.isError({id: 'foo', uri: 'bar', status: {callStatus: 'InProgress'}})).to.equal(false);
+            expect(ringout.isInProgress({id: 'foo', uri: 'bar', status: {callStatus: 'InProgress'}})).to.equal(true);
 
-            expect(Ringout.isSuccess({id: 'foo', uri: 'bar', status: {callStatus: 'Success'}})).to.equal(true);
-            expect(Ringout.isError({id: 'foo', uri: 'bar', status: {callStatus: 'Success'}})).to.equal(false);
-            expect(Ringout.isInProgress({id: 'foo', uri: 'bar', status: {callStatus: 'Success'}})).to.equal(false);
+            expect(ringout.isSuccess({id: 'foo', uri: 'bar', status: {callStatus: 'Success'}})).to.equal(true);
+            expect(ringout.isError({id: 'foo', uri: 'bar', status: {callStatus: 'Success'}})).to.equal(false);
+            expect(ringout.isInProgress({id: 'foo', uri: 'bar', status: {callStatus: 'Success'}})).to.equal(false);
 
-            expect(Ringout.isSuccess({id: 'foo', uri: 'bar', status: {callStatus: 'Error'}})).to.equal(false);
-            expect(Ringout.isError({id: 'foo', uri: 'bar', status: {callStatus: 'Error'}})).to.equal(true);
-            expect(Ringout.isInProgress({id: 'foo', uri: 'bar', status: {callStatus: 'Error'}})).to.equal(false);
+            expect(ringout.isSuccess({id: 'foo', uri: 'bar', status: {callStatus: 'Error'}})).to.equal(false);
+            expect(ringout.isError({id: 'foo', uri: 'bar', status: {callStatus: 'Error'}})).to.equal(true);
+            expect(ringout.isInProgress({id: 'foo', uri: 'bar', status: {callStatus: 'Error'}})).to.equal(false);
 
         });
 
@@ -57,7 +52,7 @@ describe('RingCentralHelpers.Ringout', function() {
 
         it('performs basic validation', function() {
 
-            var res = Ringout.validate({});
+            var res = ringout.validate({});
 
             expect(res.isValid).to.equal(false);
             expect(res.errors['to'][0]).to.be.instanceOf(Error);
@@ -69,7 +64,7 @@ describe('RingCentralHelpers.Ringout', function() {
 
         it('passes validation if values are correct', function() {
 
-            var res = Ringout.validate({to: {phoneNumber: 'foo'}, from: {phoneNumber: 'foo'}});
+            var res = ringout.validate({to: {phoneNumber: 'foo'}, from: {phoneNumber: 'foo'}});
 
             expect(res.isValid).to.equal(true);
             expect(res.errors).to.deep.equal({});

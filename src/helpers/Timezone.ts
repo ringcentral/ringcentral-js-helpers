@@ -1,6 +1,6 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
+import * as helper from '../core/Helper';
 
 export class Timezone extends helper.Helper {
 
@@ -9,6 +9,8 @@ export class Timezone extends helper.Helper {
     }
 
 }
+
+export var timezone = new Timezone();
 
 export interface ITimezone extends helper.IHelperObject {
     name?:string;

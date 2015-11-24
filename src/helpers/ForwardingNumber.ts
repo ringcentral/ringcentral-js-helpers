@@ -1,7 +1,8 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
-import list = require('../core/List');
+import * as helper from '../core/Helper';
+import * as list from '../core/List';
+import * as utils from '../core/Utils';
 
 export class ForwardingNumber extends helper.Helper {
 
@@ -23,7 +24,7 @@ export class ForwardingNumber extends helper.Helper {
 
     comparator(options?:list.IListComparatorOptions) {
 
-        return this.list.comparator(this.utils.extend({
+        return list.comparator(utils.extend({
             sortBy: 'label'
         }, options));
 
@@ -31,11 +32,11 @@ export class ForwardingNumber extends helper.Helper {
 
     filter(options?:{features:string[]}) {
 
-        options = this.utils.extend({
+        options = utils.extend({
             features: []
         }, options);
 
-        return this.list.filter([{
+        return list.filter([{
             condition: options.features.length,
             filterFn: (item) => {
 
@@ -49,6 +50,8 @@ export class ForwardingNumber extends helper.Helper {
     }
 
 }
+
+export var forwardingNumber = new ForwardingNumber();
 
 export interface IForwardingNumber extends helper.IHelperObject {
     label?:string;

@@ -1,6 +1,6 @@
 /// <reference path="../externals.d.ts" />
 
-import helper = require('../core/Helper');
+import * as helper from '../core/Helper';
 
 export class Service extends helper.Helper {
 
@@ -48,6 +48,8 @@ export class Service extends helper.Helper {
     isOnDemandCallRecordingEnabled = this.isServiceFeatureEnabledMethod('OnDemandCallRecording');
 
 }
+
+export var service = new Service();
 
 export interface IService extends helper.IHelperObject {
     serviceFeatures?:IServiceFeature[];

@@ -1,22 +1,12 @@
 /// <reference path="../externals.d.ts" />
 
-import validator = require('../core/Validator');
-import helper = require('../core/Helper');
-import utils = require('../core/Utils');
-import list = require('../core/List');
-import country = require('./Country');
+import * as validator from '../core/Validator';
+import * as helper from '../core/Helper';
+import * as utils from '../core/Utils';
+import * as list from '../core/List';
+import * as country from './Country';
 
 export class State extends helper.Helper {
-
-    private country:country.Country;
-
-    constructor(utils:utils.Utils, validator:validator.Validator, list:list.List, country:country.Country) {
-
-        super(utils, validator, list);
-
-        this.country = country;
-
-    }
 
     createUrl() {
         return '/dictionary/state';
@@ -24,15 +14,15 @@ export class State extends helper.Helper {
 
     filter(options?:IStateOptions) {
 
-        options = this.utils.extend({
+        options = utils.extend({
             countryId: ''
         }, options);
 
-        return this.list.filter([
+        return list.filter([
             {
                 condition: options.countryId,
                 filterFn: (item:IState, opts) => {
-                    return (this.country.getId(item.country) == opts.condition);
+                    return (country.country.getId(item.country) == opts.condition);
                 }
             }
         ]);
@@ -40,6 +30,8 @@ export class State extends helper.Helper {
     }
 
 }
+
+export var state = new State();
 
 export interface IState extends helper.IHelperObject {
     name?:string;
