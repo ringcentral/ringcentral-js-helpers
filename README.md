@@ -18,8 +18,7 @@ Pick the option that works best for you:
     ```Bower
     
 - Donwload everything manually *(not recommended)*:
-    - [ZIP file with source code](https://github.com/ringcentral/ringcentral-js/archive/master.zip)
-    - [ZIP file with source code](https://github.com/ringcentral/ringcentral-js-helpers/archive/master.zip)
+    - [ZIP file with source code](https://github.com/ringcentral/ringcentral-js-client/archive/master.zip)
 
 ## 1.2.a. Add scripts to HTML page
 
