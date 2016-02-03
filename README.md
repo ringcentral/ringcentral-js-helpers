@@ -164,11 +164,11 @@ var inboundCallsSortedByStartTime = calls
 These methods will provide `Subscription` objects with pre-bound events.
 
 ```js
-var subscription = helpers.presence().addEventsToSubscription({detailed: true}, '~');
+var subscription = helpers.presence().addEventToSubscription({detailed: true}, '~');
 ```
 
 ```js
-var subscription = helpers.message().addEventsToSubscription();
+var subscription = helpers.message().addEventToSubscription();
 ```
 
 Once you have a `Subscription` object, all you need to do next is register it by calling its `register` method:
